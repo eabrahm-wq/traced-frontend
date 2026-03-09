@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TracedHealth — Know who owns what you eat</title>
+<meta name="description" content="Search any food brand to see who owns it, what's changed since acquisition, and what independent alternatives exist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f5ef;
+  --surface: #f2ede4;
+  --ink: #1a1610;
+  --muted: rgba(26,22,16,0.45);
+  --border: rgba(26,22,16,0.1);
+  --amber: #b5621e;
+  --amber-light: rgba(181,98,30,0.08);
+  --red: #9b2c2c;
+  --red-light: rgba(155,44,44,0.08);
+  --green: #2d6a4f;
+  --green-light: rgba(45,106,79,0.08);
+  --yellow: #92620a;
+  --yellow-light: rgba(146,98,10,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink); font-family: 'Epilogue', sans-serif; font-weight: 300; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.logo span { color: var(--amber); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links .cta {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+.nav-links .cta:hover { opacity: .85; color: var(--bg); }
+
+/* HERO */
+.hero {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 80px 40px 60px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  margin-bottom: 24px;
+}
+.hero h1 em { font-style: italic; font-weight: 400; color: var(--amber); }
+.hero-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 580px;
+  margin: 0 auto 40px;
+}
+
+/* SEARCH */
+.search-wrap { position: relative; max-width: 560px; margin: 0 auto 20px; }
+.search-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 110px 18px 22px;
+  font-family: 'Epilogue', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px var(--amber-light);
+}
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--amber);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.search-btn:hover { opacity: .85; }
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+.pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  background: #fff;
+}
+.pill:hover { border-color: var(--amber); color: var(--amber); }
+
+/* WATCH LIST STRIP */
+.watch-strip {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 20px 0;
+  overflow: hidden;
+}
+.watch-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.watch-scroll {
+  display: flex;
+  gap: 12px;
+  padding: 0 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.watch-scroll::-webkit-scrollbar { display: none; }
+.watch-card {
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s;
+  text-align: left;
+  min-width: 180px;
+}
+.watch-card:hover { border-color: var(--amber); transform: translateY(-1px); }
+.watch-zone {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.zone-red { color: var(--red); }
+.zone-yellow { color: var(--yellow); }
+.zone-green { color: var(--green); }
+.watch-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+.watch-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* HOW IT WORKS */
+.section { max-width: 1000px; margin: 0 auto; padding: 72px 40px; }
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 40px;
+  text-align: center;
+}
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.how-item { text-align: center; }
+.how-icon { font-size: 28px; margin-bottom: 14px; }
+.how-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.how-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid var(--border); margin: 0 40px; }
+
+/* FEATURE CARDS */
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feature-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 24px;
+  transition: border-color .2s, transform .15s;
+  cursor: pointer;
+}
+.feature-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+.feature-icon { font-size: 22px; margin-bottom: 14px; }
+.feature-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.feature-desc { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+.feature-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+/* CONTENT SERIES */
+.series-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.series-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 18px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.series-card:hover { border-color: var(--amber); }
+.series-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+}
+.series-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.series-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+/* NEWS TEASER */
+.news-teaser {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 60px 40px;
+  text-align: center;
+}
+.news-teaser h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.news-teaser p { font-size: 13px; color: rgba(248,245,239,0.6); margin-bottom: 28px; line-height: 1.7; }
+.notify-form { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.notify-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: 'Epilogue', sans-serif;
+  font-size: 13px;
+  color: var(--bg);
+  outline: none;
+}
+.notify-input::placeholder { color: rgba(248,245,239,0.35); }
+.notify-input:focus { border-color: var(--amber); }
+.notify-btn {
+  background: var(--amber);
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .2s;
+}
+.notify-btn:hover { opacity: .85; }
+.notify-msg { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--amber); margin-top: 12px; min-height: 16px; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--ink); }
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .06em;
+}
+
+@media (max-width: 700px) {
+  nav { padding: 14px 20px; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 9px; }
+  .hero { padding: 50px 20px 40px; }
+  .section { padding: 48px 20px; }
+  .how-grid { grid-template-columns: 1fr; gap: 28px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .series-grid { grid-template-columns: repeat(2, 1fr); }
+  footer { padding: 28px 20px; }
+  .watch-scroll { justify-content: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="/">Traced<span>Health</span></a>
+  <div class="nav-links">
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/news">TracedNews</a>
+    <a href="/submit" class="cta">List Your Business</a>
+    <a href="https://traced-local.vercel.app" target="_blank" style="color:var(--amber)">Local →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Consumer Transparency Database</div>
+  <h1>Know who <em>really</em> owns<br>what you eat.</h1>
+  <p class="hero-sub">Search any brand to see the full ownership chain, acquisition history, ingredient changes since acquisition, FDA violations, and verified independent alternatives.</p>
+
+  <div class="search-wrap">
+    <input class="search-input" id="search-input" type="text"
+           placeholder="Search a brand — Siete, RXBAR, Blue Bottle..."
+           autocomplete="off">
+    <button class="search-btn" onclick="doSearch()">Search</button>
+  </div>
+  <div class="pills">
+    <span class="pill" onclick="goToBrand('siete')">Siete</span>
+    <span class="pill" onclick="goToBrand('rxbar')">RXBAR</span>
+    <span class="pill" onclick="goToBrand('blue-bottle-coffee')">Blue Bottle</span>
+    <span class="pill" onclick="goToBrand('clif-bar')">Clif Bar</span>
+    <span class="pill" onclick="goToBrand('siggis')">siggi's</span>
+    <span class="pill" onclick="goToBrand('annie-s')">Annie's</span>
+    <span class="pill" onclick="goToBrand('chobani')">Chobani</span>
+  </div>
+</section>
+
+<!-- WATCH LIST STRIP -->
+<div class="watch-strip">
+  <div class="watch-label">⚡ Watch List — Brands to monitor</div>
+  <div class="watch-scroll">
+    <a class="watch-card" href="/brands/siete">
+      <div class="watch-zone zone-red">● Red — PE Owned</div>
+      <div class="watch-name">Siete</div>
+      <div class="watch-note">PepsiCo $1.2B acquisition · Formula watch</div>
+    </a>
+    <a class="watch-card" href="/brands/poppi">
+      <div class="watch-zone zone-red">● Red — PE Owned</div>
+      <div class="watch-name">Poppi</div>
+      <div class="watch-note">PepsiCo $1.65B · ACV claims lawsuit</div>
+    </a>
+    <a class="watch-card" href="/brands/blue-bottle-coffee">
+      <div class="watch-zone zone-red">● Red — Corporate</div>
+      <div class="watch-name">Blue Bottle</div>
+      <div class="watch-note">Nestlé → Centurium Capital · James Freeman exited</div>
+    </a>
+    <a class="watch-card" href="/brands/simple-mills">
+      <div class="watch-zone zone-yellow">● Yellow — PE Backed</div>
+      <div class="watch-name">Simple Mills</div>
+      <div class="watch-note">Primavera Capital (Chinese PE) · Acquisition watch</div>
+    </a>
+    <a class="watch-card" href="/brands/celsius">
+      <div class="watch-zone zone-yellow">● Yellow — Public</div>
+      <div class="watch-name">Celsius</div>
+      <div class="watch-note">PepsiCo 8.5% stake · FTC influencer warning</div>
+    </a>
+    <a class="watch-card" href="/brands/siggis">
+      <div class="watch-zone zone-yellow">● Yellow — Acquired</div>
+      <div class="watch-name">siggi's</div>
+      <div class="watch-note">MS Iceland dairy · Watch for PE flip</div>
+    </a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-label">How it works</div>
+  <div class="how-grid">
+    <div class="how-item">
+      <div class="how-icon">🔍</div>
+      <div class="how-title">Search or Scan</div>
+      <div class="how-desc">Type any brand name or scan a barcode with your phone camera. TracedHealth resolves brand names automatically — even with typos or alternate spellings.</div>
+    </div>
+    <div class="how-item">
+      <div class="how-icon">📋</div>
+      <div class="how-title">See the Full Story</div>
+      <div class="how-desc">Get the complete ownership chain, acquisition date and price, ingredient drift post-acquisition, FDA violations, and lobbying spend by the parent company.</div>
+    </div>
+    <div class="how-item">
+      <div class="how-icon">🟢</div>
+      <div class="how-title">Find Independent Alternatives</div>
+      <div class="how-desc">Every red-zone brand includes a curated list of independent alternatives in the same category — founder-owned, co-op, or employee-owned businesses.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FEATURE CARDS -->
+<section class="section">
+  <div class="section-label">Tools</div>
+  <div class="feature-grid">
+    <a class="feature-card" href="/scanner">
+      <div class="feature-icon">📷</div>
+      <div class="feature-title">Barcode Scanner</div>
+      <div class="feature-desc">Point your camera at any product and instantly see who owns the brand — including PE ownership, acquisition history, and what's changed.</div>
+      <div class="feature-link">Open Scanner →</div>
+    </a>
+    <a class="feature-card" href="/research">
+      <div class="feature-icon">✍️</div>
+      <div class="feature-title">Research Builder</div>
+      <div class="feature-desc">Generate Instagram captions, fact sheets, and shareable research cards. Built for food journalists and consumer advocates.</div>
+      <div class="feature-link">Open Research Builder →</div>
+    </a>
+    <a class="feature-card" href="/submit">
+      <div class="feature-icon">🟢</div>
+      <div class="feature-title">List Your Business</div>
+      <div class="feature-desc">Independent food and beverage businesses can apply to get the TracedHealth green badge — verified founder-owned or co-op status.</div>
+      <div class="feature-link">Submit Your Business →</div>
+    </a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTENT SERIES -->
+<section class="section">
+  <div class="section-label">Explainers</div>
+  <div class="series-grid">
+    <a class="series-card" href="/pe-explainer">
+      <div class="series-tag">Deep Dive</div>
+      <div class="series-title">What Private Equity Does to Food Brands</div>
+      <div class="series-cta">Read →</div>
+    </a>
+    <a class="series-card" href="/conglomerate-explainer">
+      <div class="series-tag">Deep Dive</div>
+      <div class="series-title">Five Companies Own What You Eat</div>
+      <div class="series-cta">Read →</div>
+    </a>
+    <a class="series-card" href="/clean-label-explainer">
+      <div class="series-tag">Label Watch</div>
+      <div class="series-title">Clean, Natural & Simple Mean Nothing</div>
+      <div class="series-cta">Read →</div>
+    </a>
+    <a class="series-card" href="/sf-independence-index">
+      <div class="series-tag">City Index</div>
+      <div class="series-title">SF Independence Index 2026</div>
+      <div class="series-cta">Read →</div>
+    </a>
+  </div>
+</section>
+
+<!-- NEWS TEASER -->
+<div class="news-teaser">
+  <h2>TracedNews is coming.</h2>
+  <p>Ownership changes, formula shifts, and regulatory actions —<br>the stories behind the brands you buy. Daily.</p>
+  <form class="notify-form" onsubmit="submitNotify(event)">
+    <input class="notify-input" id="notify-email" type="email" placeholder="your@email.com">
+    <button class="notify-btn" type="submit">Notify me</button>
+  </form>
+  <div class="notify-msg" id="notify-msg"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TracedHealth</div>
+  <div class="footer-links">
+    <a href="/brands/siete">Search Brands</a>
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/news">TracedNews</a>
+    <a href="/submit">Submit Business</a>
+    <a href="/methodology">Methodology</a>
+    <a href="https://traced-local.vercel.app" target="_blank">Local →</a>
+  </div>
+  <div class="footer-copy">© 2026 TracedHealth</div>
+</footer>
+
+<script>
+const API_BASE = 'https://api.tracedhealth.com';
+
+function slugify(text) {
+  return text.toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function goToBrand(slug) {
+  window.location.href = '/brands/' + slug;
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) return;
+  // Navigate to brand profile page with query param
+  const slug = slugify(q);
+  window.location.href = '/brands/' + slug;
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+async function submitNotify(e) {
+  e.preventDefault();
+  const email = document.getElementById('notify-email').value.trim();
+  const msg = document.getElementById('notify-msg');
+  if (!email) return;
+  try {
+    await fetch(API_BASE + '/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    msg.textContent = '✓ You\'re on the list.';
+    document.getElementById('notify-email').value = '';
+  } catch {
+    msg.textContent = '✓ Added to waitlist.';
+  }
+}
+</script>
+</body>
+</html>

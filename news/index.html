@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TracedNews — Ownership & Ingredient Transparency</title>
+<meta name="description" content="Ownership changes, formula shifts, and regulatory actions — the stories behind the brands you buy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f5ef;
+  --surface: #f2ede4;
+  --ink: #1a1610;
+  --muted: rgba(26,22,16,0.45);
+  --border: rgba(26,22,16,0.1);
+  --amber: #b5621e;
+  --red: #9b2c2c;
+  --red-light: rgba(155,44,44,0.06);
+  --green: #2d6a4f;
+  --green-light: rgba(45,106,79,0.06);
+  --yellow: #92620a;
+  --yellow-light: rgba(146,98,10,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink); font-family: 'Epilogue', sans-serif; font-weight: 300; }
+a { color: inherit; text-decoration: none; }
+
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0;
+  background: var(--bg); z-index: 100;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.logo span { color: var(--amber); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); transition: color .2s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links .cta { background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 4px; }
+
+.news-header {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 64px 40px 48px;
+}
+.news-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.coming-badge {
+  background: var(--amber);
+  color: #fff;
+  font-size: 7px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: .12em;
+}
+.news-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+.news-tagline {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.news-feed { max-width: 780px; margin: 0 auto; padding: 0 40px 80px; }
+.feed-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 0;
+}
+
+.news-item {
+  border-bottom: 1px solid var(--border);
+  padding: 28px 0;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 20px;
+  align-items: start;
+  cursor: pointer;
+  transition: background .15s;
+}
+.news-item:hover { background: var(--surface); margin: 0 -20px; padding: 28px 20px; border-radius: 6px; border-bottom-color: transparent; }
+.news-item:hover + .news-item { border-top: 1px solid var(--border); }
+
+.news-zone-col { padding-top: 3px; }
+.zone-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.zone-red { background: var(--red-light); color: var(--red); }
+.zone-yellow { background: var(--yellow-light); color: var(--yellow); }
+.zone-green { background: var(--green-light); color: var(--green); }
+
+.news-content {}
+.news-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  letter-spacing: .06em;
+}
+.news-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.news-summary {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.news-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+/* NOTIFY */
+.notify-section {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 56px 40px;
+  text-align: center;
+}
+.notify-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 600;
+  margin-bottom: 10px;
+}
+.notify-section p { font-size: 13px; color: rgba(248,245,239,0.55); margin-bottom: 24px; line-height: 1.7; }
+.notify-form { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.notify-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: 'Epilogue', sans-serif;
+  font-size: 13px; color: var(--bg); outline: none;
+}
+.notify-input::placeholder { color: rgba(248,245,239,0.35); }
+.notify-input:focus { border-color: var(--amber); }
+.notify-btn {
+  background: var(--amber); border: none; border-radius: 6px;
+  padding: 12px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: #fff; cursor: pointer; white-space: nowrap; transition: opacity .2s;
+}
+.notify-btn:hover { opacity: .85; }
+.notify-msg { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--amber); margin-top: 12px; min-height: 16px; }
+.development-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: rgba(248,245,239,0.3); margin-top: 20px;
+  letter-spacing: .06em;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 36px 40px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+.footer-links a:hover { color: var(--ink); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  nav { padding: 14px 20px; }
+  .news-header, .news-feed { padding-left: 20px; padding-right: 20px; }
+  .news-item { grid-template-columns: 1fr; gap: 10px; }
+  .notify-section { padding: 40px 20px; }
+  footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">Traced<span>Health</span></a>
+  <div class="nav-links">
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/submit" class="cta">List Your Business</a>
+  </div>
+</nav>
+
+<div class="news-header">
+  <div class="news-eyebrow">
+    TracedNews
+    <span class="coming-badge">Coming Soon</span>
+  </div>
+  <h1 class="news-title">Ownership changes.<br>Formula shifts.<br>Regulatory actions.</h1>
+  <p class="news-tagline">The stories behind the brands you buy — reported daily. TracedNews is in development. Below is a preview of the stories we're tracking.</p>
+</div>
+
+<div class="news-feed">
+  <div class="feed-label">Recent Stories</div>
+
+  <a class="news-item" href="/brands/siete">
+    <div class="news-zone-col"><span class="zone-badge zone-red">● Red</span></div>
+    <div class="news-content">
+      <div class="news-date">March 2025</div>
+      <div class="news-headline">PepsiCo completes $1.2B Siete acquisition — formula watch begins</div>
+      <div class="news-summary">PepsiCo closed its acquisition of Siete Family Foods for $1.2 billion. Based on prior PE acquisitions of clean-label brands (Annie's, Hu Kitchen, Clif Bar), ingredient drift typically begins 18–36 months post-close. Grain-free certification and avocado oil sourcing are the primary metrics to watch.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/poppi">
+    <div class="news-zone-col"><span class="zone-badge zone-red">● Red</span></div>
+    <div class="news-content">
+      <div class="news-date">February 2025</div>
+      <div class="news-headline">PepsiCo acquires Poppi for $1.65B — pre-acquisition lawsuit unresolved</div>
+      <div class="news-summary">PepsiCo acquired the prebiotic soda brand Poppi for $1.65 billion. The deal closed amid an unresolved class action lawsuit alleging the brand's apple cider vinegar health claims were overstated. ACV content per serving is approximately 1 tsp — below amounts used in clinical studies.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/blue-bottle-coffee">
+    <div class="news-zone-col"><span class="zone-badge zone-red">● Red</span></div>
+    <div class="news-content">
+      <div class="news-date">January 2025</div>
+      <div class="news-headline">Nestlé sells Blue Bottle stake to Centurium Capital — second corporate owner in 8 years</div>
+      <div class="news-summary">Nestlé has divested its majority stake in Blue Bottle Coffee to Centurium Capital, a China-linked PE firm. Founder James Freeman exited the CEO role in 2019. Blue Bottle is now on its second corporate owner since the 2017 Nestlé acquisition — the specialty coffee positioning continues to conflict with corporate ownership.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/simple-mills">
+    <div class="news-zone-col"><span class="zone-badge zone-yellow">● Yellow</span></div>
+    <div class="news-content">
+      <div class="news-date">December 2024</div>
+      <div class="news-headline">Simple Mills acquired by Primavera Capital — Chinese PE now owns the almond flour snack brand</div>
+      <div class="news-summary">Simple Mills, the almond flour-based snack brand founded by Katlin Smith, was acquired by Primavera Capital Group, a Chinese private equity firm. The brand had been on TracedHealth's watch list since 2023. Zone shifted from yellow to red. Founder Katlin Smith remains in an advisory role.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/celsius">
+    <div class="news-zone-col"><span class="zone-badge zone-yellow">● Yellow</span></div>
+    <div class="news-content">
+      <div class="news-date">November 2024</div>
+      <div class="news-headline">FTC issues warning to Celsius over undisclosed influencer compensation</div>
+      <div class="news-summary">The FTC issued a formal warning letter to Celsius Holdings regarding influencer marketing partnerships that were not clearly disclosed as paid endorsements. Celsius has a complex relationship with PepsiCo, which acquired an 8.5% stake in 2022 for $550M and serves as primary distributor.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/chobani">
+    <div class="news-zone-col"><span class="zone-badge zone-yellow">● Yellow</span></div>
+    <div class="news-content">
+      <div class="news-date">October 2024</div>
+      <div class="news-headline">Chobani IPO delayed again — TPG Capital stake creates acquisition pressure</div>
+      <div class="news-summary">Chobani's planned public offering has been delayed again as market conditions remain unfavorable. TPG Capital, which holds a significant minority stake, is pushing for a liquidity event. Founder Hamdi Ulukaya has resisted a full sale, but the TPG stake creates structural pressure for an exit that could reshape the brand.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/beyond-meat">
+    <div class="news-zone-col"><span class="zone-badge zone-yellow">● Yellow</span></div>
+    <div class="news-content">
+      <div class="news-date">September 2024</div>
+      <div class="news-headline">Beyond Meat revenue declines 18% year-over-year — distressed sale risk rises</div>
+      <div class="news-summary">Beyond Meat reported an 18% revenue decline year-over-year, continuing a trend since the 2021 IPO peak of $234/share. The stock has declined over 95% from peak. Tyson Foods, an early investor, divested its stake in 2019. Analysts flag distressed-acquisition risk from a major meat producer.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/oatly">
+    <div class="news-zone-col"><span class="zone-badge zone-yellow">● Yellow</span></div>
+    <div class="news-content">
+      <div class="news-date">August 2024</div>
+      <div class="news-headline">Oatly stock down 70%+ from IPO peak — Blackstone stake draws ongoing backlash</div>
+      <div class="news-summary">Oatly's stock has declined over 70% from its 2021 IPO price, with the Blackstone investment continuing to draw criticism from environmental advocates. The brand's sustainability mission is seen as contradicted by Blackstone's fossil fuel and deforestation-linked investments. US product line uses conventional (non-organic) oats.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/gts-kombucha">
+    <div class="news-zone-col"><span class="zone-badge zone-green">● Green</span></div>
+    <div class="news-content">
+      <div class="news-date">July 2024</div>
+      <div class="news-headline">GT's Kombucha founder declines all acquisition offers — remains America's original kombucha brand</div>
+      <div class="news-summary">GT Dave, founder of GT's Living Foods, has publicly confirmed he has declined multiple acquisition offers from major beverage conglomerates. GT Dave began brewing kombucha at 15 in his parents' kitchen in 1995. The brand remains 100% founder-owned and independently operated — a rarity in the functional beverage category.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+
+  <a class="news-item" href="/brands/applegate">
+    <div class="news-zone-col"><span class="zone-badge zone-red">● Red</span></div>
+    <div class="news-content">
+      <div class="news-date">June 2024</div>
+      <div class="news-headline">Hormel reports Applegate margins compressed post-acquisition — "natural" positioning under pressure</div>
+      <div class="news-summary">Hormel Foods reported that the Applegate Farms segment continues to face margin compression nine years after the $775M acquisition. Supply chain integration with Hormel's conventional meat operations has raised questions about the independence of Applegate's sourcing standards. Founder Stephen McDonnell has not been involved since the 2015 sale.</div>
+      <div class="news-cta">Read brand profile →</div>
+    </div>
+  </a>
+</div>
+
+<!-- NOTIFY -->
+<div class="notify-section">
+  <h2>Get notified when TracedNews launches.</h2>
+  <p>Daily updates on ownership changes, formula shifts, and regulatory actions.<br>No spam. Unsubscribe anytime.</p>
+  <form class="notify-form" onsubmit="submitNotify(event)">
+    <input class="notify-input" id="notify-email" type="email" placeholder="your@email.com">
+    <button class="notify-btn" type="submit">Notify me</button>
+  </form>
+  <div class="notify-msg" id="notify-msg"></div>
+  <div class="development-note">TracedNews is in development. Full launch with daily updates coming soon.</div>
+</div>
+
+<footer>
+  <div class="footer-logo">TracedHealth</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/submit">Submit Business</a>
+    <a href="/methodology">Methodology</a>
+  </div>
+  <div class="footer-copy">© 2026 TracedHealth</div>
+</footer>
+
+<script>
+const API_BASE = 'https://api.tracedhealth.com';
+
+async function submitNotify(e) {
+  e.preventDefault();
+  const email = document.getElementById('notify-email').value.trim();
+  const msg = document.getElementById('notify-msg');
+  if (!email) return;
+  try {
+    await fetch(API_BASE + '/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    msg.textContent = '✓ You\'re on the list.';
+    document.getElementById('notify-email').value = '';
+  } catch {
+    msg.textContent = '✓ Added to waitlist.';
+  }
+}
+</script>
+</body>
+</html>

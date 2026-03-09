@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>"Clean." "Natural." "Simple." None of These Words Mean Anything — TracedHealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0d;
+    --surface: #161614;
+    --panel: #1c1c19;
+    --border: #282825;
+    --border-mid: #333330;
+    --text: #e8e4d8;
+    --text-dim: #7a7770;
+    --text-mid: #a8a49a;
+    --gold: #c8a84a;
+    --gold-dim: #6a5820;
+    --amber: #d4760a;
+    --red: #c0372a;
+    --green: #3a8a58;
+    --white: #f0ece0;
+    --serif: 'Fraunces', Georgia, serif;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  nav {
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(15,15,13,0.96);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .nav-logo { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--gold); text-decoration: none; text-transform: uppercase; }
+  .nav-tag { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* HERO */
+  .hero {
+    padding: 120px 48px 100px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero-watermark {
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    font-family: var(--serif);
+    font-size: 280px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(200,168,74,0.04);
+    pointer-events: none;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-label::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(44px, 6.5vw, 82px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 860px;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+
+  .hero h1 strong {
+    font-weight: 900;
+    font-style: normal;
+    color: var(--gold);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 3px;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin-top: 32px;
+    line-height: 1.7;
+  }
+
+  /* WORD STRIKE SECTION */
+  .words-section {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .word-row {
+    display: grid;
+    grid-template-columns: 280px 1fr 200px;
+    border-bottom: 1px solid var(--border);
+    align-items: stretch;
+    transition: background 0.15s;
+  }
+  .word-row:hover { background: var(--surface); }
+  .word-row:last-child { border-bottom: none; }
+
+  .word-term {
+    padding: 40px 48px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+  }
+
+  .word-term-text {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--white);
+    position: relative;
+  }
+
+  .word-term-text.struck {
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    color: var(--text-dim);
+  }
+
+  .word-definition {
+    padding: 40px 48px;
+    border-right: 1px solid var(--border);
+  }
+
+  .word-legal {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .word-definition p {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    max-width: none;
+  }
+
+  .word-definition p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .word-verdict {
+    padding: 40px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .verdict-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .verdict-badge.unregulated { background: rgba(192,55,42,0.12); color: var(--red); border: 1px solid rgba(192,55,42,0.3); }
+  .verdict-badge.partial { background: rgba(212,118,10,0.1); color: var(--amber); border: 1px solid rgba(212,118,10,0.3); }
+  .verdict-badge.protected { background: rgba(58,138,88,0.1); color: var(--green); border: 1px solid rgba(58,138,88,0.3); }
+
+  /* SECTION */
+  .section {
+    padding: 100px 48px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section.full { max-width: none; padding: 100px 0; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4.5vw, 54px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    color: var(--white);
+  }
+
+  h2 em { font-style: italic; color: var(--gold); font-weight: 300; }
+
+  .lead {
+    font-size: 17px;
+    color: var(--text-mid);
+    max-width: 640px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  /* THE SPECTRUM */
+  .spectrum {
+    margin-top: 64px;
+    border: 1px solid var(--border);
+  }
+
+  .spectrum-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .spectrum-col-label {
+    padding: 16px 24px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-right: 1px solid var(--border);
+  }
+  .spectrum-col-label:last-child { border-right: none; }
+  .spectrum-col-label.red { color: var(--red); }
+  .spectrum-col-label.amber { color: var(--amber); }
+  .spectrum-col-label.green { color: var(--green); }
+
+  .spectrum-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .spectrum-row:last-child { border-bottom: none; }
+
+  .spectrum-cell {
+    padding: 28px 24px;
+    border-right: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+  .spectrum-cell:last-child { border-right: none; }
+
+  .spectrum-cell strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .spectrum-cell.red strong { color: var(--red); }
+  .spectrum-cell.amber strong { color: var(--amber); }
+  .spectrum-cell.green strong { color: var(--green); }
+
+  /* WHAT TO LOOK FOR */
+  .checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    margin-top: 48px;
+  }
+
+  .check-item {
+    background: var(--panel);
+    padding: 36px 40px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .check-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-top: 2px;
+  }
+
+  .check-icon.good { background: rgba(58,138,88,0.12); border: 1px solid rgba(58,138,88,0.25); }
+  .check-icon.bad { background: rgba(192,55,42,0.1); border: 1px solid rgba(192,55,42,0.25); }
+  .check-icon.neutral { background: rgba(200,168,74,0.08); border: 1px solid rgba(200,168,74,0.2); }
+
+  .check-content h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+
+  .check-content p {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: none;
+  }
+
+  /* THE TACTICS GRID */
+  .tactics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-top: 48px;
+  }
+
+  .tactic {
+    background: var(--surface);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tactic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--red);
+  }
+
+  .tactic-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .tactic h3 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .tactic p {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: none;
+  }
+
+  .tactic-example {
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold-dim);
+    padding: 10px 14px;
+    border: 1px solid var(--border-mid);
+    background: rgba(200,168,74,0.04);
+    line-height: 1.5;
+  }
+
+  .tactic-example strong { color: var(--gold); font-weight: 400; }
+
+  /* THE GOOD LIST */
+  .good-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .good-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 48px;
+  }
+
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-top: 48px;
+  }
+
+  .cert-card {
+    background: var(--panel);
+    padding: 36px 32px;
+  }
+
+  .cert-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .cert-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .cert-card h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .cert-card p {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: none;
+  }
+
+  .cert-card .cert-means {
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    padding: 8px 12px;
+    border: 1px solid rgba(58,138,88,0.25);
+    background: rgba(58,138,88,0.06);
+    line-height: 1.4;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 80px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 { font-size: clamp(28px, 3.5vw, 44px); margin-bottom: 16px; }
+
+  .cta-section p {
+    font-size: 16px;
+    color: var(--text-mid);
+    max-width: 480px;
+    line-height: 1.65;
+  }
+
+  .cta-buttons { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    border: 1px solid var(--border-mid);
+    color: var(--text-dim);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--text-mid); color: var(--text); }
+
+  /* SERIES NAV */
+  .series-nav {
+    display: flex;
+    border-top: 1px solid var(--border);
+  }
+
+  .series-item {
+    flex: 1;
+    padding: 32px 48px;
+    border-right: 1px solid var(--border);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .series-item:last-child { border-right: none; }
+  .series-item:hover { background: var(--surface); }
+
+  .series-item-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .series-item-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* FOOTER */
+  .footer-bar {
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .footer-bar span { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; }
+  .footer-bar a { font-family: var(--mono); font-size: 11px; color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 900px) {
+    nav, .hero, .section, .good-inner { padding-left: 24px; padding-right: 24px; }
+    .word-row { grid-template-columns: 1fr; }
+    .word-term, .word-verdict { border-right: none; border-bottom: 1px solid var(--border); }
+    .spectrum-header, .spectrum-row { grid-template-columns: 1fr; }
+    .checklist { grid-template-columns: 1fr; }
+    .tactics-grid { grid-template-columns: 1fr; }
+    .certs-grid { grid-template-columns: 1fr 1fr; }
+    .cta-section { grid-template-columns: 1fr; gap: 40px; }
+    .cta-buttons { flex-direction: row; }
+    .series-nav { flex-direction: column; }
+    .footer-bar { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://tracedhealth.com" class="nav-logo">TracedHealth</a>
+  <span class="nav-tag">Explainer Series · Part 3</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-watermark">"Clean"</div>
+  <div class="hero-label">Explainer Series — Part Three</div>
+  <h1><strong>"Clean."</strong> <strong>"Natural."</strong><br><strong>"Simple."</strong><br><em>None of these words<br>mean anything.</em></h1>
+  <p class="hero-sub">The most powerful marketing terms in food are completely unregulated. Here's what each word legally means — and what brands are actually allowed to put on a label.</p>
+</div>
+
+<!-- THE WORDS -->
+<div class="words-section">
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text struck">"Clean"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: None</div>
+      <p>The FDA has no definition for "clean" as applied to food. Any brand can use it on any product without restriction. <strong>There is no ingredient list, no process requirement, no third-party verification.</strong> A product with artificial flavors, preservatives, and synthetic dyes can legally be marketed as "clean eating." The term was invented by marketing departments, not regulators. It means exactly what each brand chooses it to mean.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge unregulated">Fully<br>Unregulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text struck">"Natural"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: Informal guidance only — no enforceable standard</div>
+      <p>The FDA has attempted to define "natural" since 1991 and has never succeeded. Its current informal guidance suggests nothing artificial or synthetic has been added — but this is guidance, not law, and it is not enforced. <strong>High-fructose corn syrup, a highly processed industrial ingredient, was ruled "natural" by courts in 2008.</strong> The USDA has a separate definition for meat products only. For everything else, "natural" is unenforceable marketing language.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge unregulated">Essentially<br>Unregulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text struck">"Simple"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: None</div>
+      <p>"Simple ingredients," "simply made," "simply crafted" — none of these phrases have any legal definition. <strong>A product with 28 ingredients can be marketed as "simple."</strong> Brands typically use this term to imply short ingredient lists or minimal processing, but there is no standard for how many ingredients qualify as "simple," what processing methods are excluded, or what certification would verify the claim.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge unregulated">Fully<br>Unregulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text struck">"Wholesome"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: None</div>
+      <p>Like "clean" and "simple," "wholesome" has no regulatory definition in food labeling. It appears frequently on products in the snack, bread, and cereal categories. <strong>The word evokes nutrition and quality without making any specific claim that would require substantiation.</strong> This is its appeal to marketing departments — it communicates positive associations without triggering the FDA's health claim review process.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge unregulated">Fully<br>Unregulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text">"Organic"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">USDA regulation: Enforceable — NOP certification required</div>
+      <p>"Organic" is the most regulated term in food marketing. USDA National Organic Program (NOP) certification requires third-party verification, annual inspections, and compliance with specific production standards — no synthetic pesticides, no GMOs, no synthetic fertilizers for crops; specific feed and living conditions for livestock. <strong>"100% Organic" means all ingredients are certified. "Organic" means 95%+ certified ingredients. "Made with Organic" means 70%+ certified ingredients.</strong> The certification costs money and involves real audits.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge protected">Legally<br>Protected</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text">"Non-GMO"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">USDA: BE disclosure required · Non-GMO Project: voluntary certification</div>
+      <p>The USDA's Bioengineered (BE) disclosure law requires food manufacturers to disclose bioengineered ingredients — but the threshold and scope are limited. The Non-GMO Project Verified seal is voluntary and requires third-party testing. <strong>"Non-GMO" on a label without the Non-GMO Project seal is an unverified marketing claim — no testing required.</strong> The distinction between "Non-GMO Project Verified" and "non-GMO" on a label matters significantly.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge partial">Partially<br>Regulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text struck">"Transparent"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: None</div>
+      <p>Brands marketing themselves as "transparent" are making a brand promise with no legal backing. <strong>A brand can claim transparency while being owned by a conglomerate it doesn't disclose, reformulating its products without announcement, and sourcing ingredients from suppliers it doesn't name.</strong> Transparency as a marketing term is completely self-defined. The only meaningful version of food transparency involves third-party verification — which almost no brand provides voluntarily.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge unregulated">Fully<br>Unregulated</div>
+    </div>
+  </div>
+
+  <div class="word-row">
+    <div class="word-term">
+      <div class="word-term-text">"Gluten-Free"</div>
+    </div>
+    <div class="word-definition">
+      <div class="word-legal">FDA regulation: Enforceable — <20 ppm gluten standard</div>
+      <p>"Gluten-free" has an FDA-enforceable standard: products labeled gluten-free must contain less than 20 parts per million of gluten. This threshold aligns with international standards and is based on the level generally tolerated by people with celiac disease. <strong>This is one of the few food marketing terms where the label claim has a specific, measurable, enforceable standard.</strong> Note: gluten-free does not mean healthy, nutritious, or minimally processed — it is a single-ingredient exclusion claim only.</p>
+    </div>
+    <div class="word-verdict">
+      <div class="verdict-badge protected">Legally<br>Protected</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE TACTICS -->
+<div class="section">
+  <div class="section-label">Part Two</div>
+  <h2>Six Tactics Brands<br>Use on <em>Labels</em></h2>
+  <p class="lead">Beyond the unregulated words, there are specific techniques used to make products appear healthier, more natural, or more transparent than they are. Each is technically legal.</p>
+
+  <div class="tactics-grid">
+    <div class="tactic">
+      <div class="tactic-num">Tactic 01</div>
+      <h3>Ingredient Splitting</h3>
+      <p>Sugar is the most common example. A product may contain multiple forms of sugar — cane sugar, brown rice syrup, honey, molasses, agave — listed separately so none appears near the top of the ingredient list. Since ingredients are listed by weight in descending order, splitting a single ingredient across multiple forms pushes each one further down.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> Multiple sweetener types in the same product — "cane sugar, brown rice syrup, coconut sugar" = a lot of sugar listed three times.</div>
+    </div>
+
+    <div class="tactic">
+      <div class="tactic-num">Tactic 02</div>
+      <h3>Front-of-Pack Highlighting</h3>
+      <p>A product prominently featuring "Made with Organic Oats" on the front may contain 3% organic oats by weight. The front of a package is marketing real estate with almost no regulatory restrictions. Claims on the front panel do not need to represent the dominant ingredient or a meaningful percentage of the product.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> Bold claims on the front of a package that don't match the ingredient list hierarchy when you flip it over.</div>
+    </div>
+
+    <div class="tactic">
+      <div class="tactic-num">Tactic 03</div>
+      <h3>"Per Serving" Manipulation</h3>
+      <p>Serving sizes are technically regulated but have significant flexibility, particularly for snack products. A container that appears single-serve may list two or 2.5 servings, cutting the sugar, sodium, and calorie numbers displayed on the Nutrition Facts panel. The FDA updated serving size rules in 2020 but many products still use unrealistic serving definitions.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> Serving sizes that don't reflect how anyone actually eats the product — particularly for bars, drinks, and chips.</div>
+    </div>
+
+    <div class="tactic">
+      <div class="tactic-num">Tactic 04</div>
+      <h3>Health Halo Imagery</h3>
+      <p>Packaging that features farm imagery, green fields, sunlight, and artisanal typography communicates naturalness without making any claim. This is entirely unregulated — imagery is not held to the same standard as text claims. A product manufactured in a large industrial facility can feature hand-drawn illustrations of small farms on the label.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> The gap between the packaging aesthetic and the actual ownership and manufacturing reality of the brand.</div>
+    </div>
+
+    <div class="tactic">
+      <div class="tactic-num">Tactic 05</div>
+      <h3>Selective Certification Display</h3>
+      <p>Brands with one legitimate certification — say, Non-GMO Project Verified — will sometimes display it prominently alongside other visual elements that imply additional certifications. The presence of one real certification creates a "halo" that implies broader compliance. The seals displayed on packaging are not always equal in rigor or scope.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> Products that display a certification seal prominently but don't hold the more rigorous certification you might assume they do (e.g., Non-GMO ≠ Organic).</div>
+    </div>
+
+    <div class="tactic">
+      <div class="tactic-num">Tactic 06</div>
+      <h3>Founder Story Persistence</h3>
+      <p>The founding story — "started in our kitchen," "inspired by our grandmother's recipes," "founded on the belief that..." — remains on packaging long after a brand has been acquired by a conglomerate. There is no regulation requiring brands to disclose ownership changes or update founding narratives to reflect current corporate reality.</p>
+      <div class="tactic-example"><strong>Watch for:</strong> First-person founder language on brands that have been acquired. The story may be true of how the brand started. It may not describe who runs it today.</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE SPECTRUM -->
+<div class="section" style="background: var(--surface); max-width: none; padding: 100px 48px;">
+  <div class="section-label">Part Three</div>
+  <h2>The Certification<br><em>Spectrum</em></h2>
+  <p class="lead">Not all labels are equal. Here's where common certifications and claims land on the spectrum from unverified marketing to legally enforced standards.</p>
+
+  <div class="spectrum">
+    <div class="spectrum-header">
+      <div class="spectrum-col-label red">Marketing Claims<br>(No verification)</div>
+      <div class="spectrum-col-label amber">Voluntary Certifications<br>(Third-party, no legal requirement)</div>
+      <div class="spectrum-col-label green">Regulated Claims<br>(Legally enforceable)</div>
+    </div>
+
+    <div class="spectrum-row">
+      <div class="spectrum-cell red">
+        <strong>"Clean"</strong>
+        No definition, no verification, no enforcement. Any product can use this term.
+      </div>
+      <div class="spectrum-cell amber">
+        <strong>Non-GMO Project Verified</strong>
+        Third-party testing required. Voluntary program. Meaningful but not legally required.
+      </div>
+      <div class="spectrum-cell green">
+        <strong>USDA Organic (100%)</strong>
+        Annual third-party inspection. Legally enforceable. Clear ingredient threshold.
+      </div>
+    </div>
+
+    <div class="spectrum-row">
+      <div class="spectrum-cell red">
+        <strong>"Natural"</strong>
+        Informal FDA guidance only. Not enforced. Routinely applied to processed products.
+      </div>
+      <div class="spectrum-cell amber">
+        <strong>B Corp Certification</strong>
+        Rigorous social and environmental standards. Third-party verified. Voluntary. Covers the whole company, not just products.
+      </div>
+      <div class="spectrum-cell green">
+        <strong>Gluten-Free</strong>
+        FDA-enforceable &lt;20 ppm standard. Laboratory-testable. Legal liability if violated.
+      </div>
+    </div>
+
+    <div class="spectrum-row">
+      <div class="spectrum-cell red">
+        <strong>"Simple ingredients"</strong>
+        No count threshold. No processing restriction. Entirely self-defined by each brand.
+      </div>
+      <div class="spectrum-cell amber">
+        <strong>Fair Trade Certified</strong>
+        Third-party audited supply chain. Farm-level verification. Voluntary. Strong on labor, less comprehensive on ingredients.
+      </div>
+      <div class="spectrum-cell green">
+        <strong>USDA Organic (95%+)</strong>
+        Same enforcement as 100% Organic but allows up to 5% non-organic ingredients from approved list.
+      </div>
+    </div>
+
+    <div class="spectrum-row">
+      <div class="spectrum-cell red">
+        <strong>"Wholesome" / "Nourishing"</strong>
+        No nutrient standards. No ingredient restrictions. Marketing language only.
+      </div>
+      <div class="spectrum-cell amber">
+        <strong>Rainforest Alliance</strong>
+        Sustainability-focused supply chain certification. Third-party audited. Most relevant for coffee, chocolate, tea.
+      </div>
+      <div class="spectrum-cell green">
+        <strong>Allergen Declarations</strong>
+        Legally required disclosure of major allergens. Enforceable. Legal liability for non-compliance.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT TO LOOK FOR -->
+<div class="section">
+  <div class="section-label">Part Four</div>
+  <h2>What to Actually<br><em>Look For</em></h2>
+  <p class="lead">Given that most marketing language is unverifiable, here are the signals that actually distinguish more trustworthy products from those relying on label theater.</p>
+
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-icon good">✓</div>
+      <div class="check-content">
+        <h3>USDA Organic seal — the real one</h3>
+        <p>The green and white USDA Organic seal is legally backed. Look for "USDA Organic" not just the word "organic" in marketing copy. The seal requires annual certification, third-party inspection, and specific production standards. It's the most substantive claim in food labeling.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon good">✓</div>
+      <div class="check-content">
+        <h3>Short, readable ingredient lists</h3>
+        <p>While "simple" has no legal definition, you can evaluate ingredient lists yourself. Ingredients you recognize and can pronounce, listed in small numbers, with no synthetic additives, is a more reliable signal than any marketing claim. The ingredient list is the most regulated part of a food label.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon good">✓</div>
+      <div class="check-content">
+        <h3>B Corp certification for the whole company</h3>
+        <p>B Corp certification evaluates the entire company — governance, workers, community, environment, and customers. It's rigorous, third-party verified, and covers the company's actual practices, not just its product formulation. An acquired brand typically loses B Corp status or must re-certify under new ownership.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon good">✓</div>
+      <div class="check-content">
+        <h3>Transparent ownership disclosure</h3>
+        <p>The most underrated signal: does the brand tell you who owns it? A brand that proactively discloses its parent company is demonstrating real transparency. A brand that buries or omits this information while using transparency language in its marketing is doing the opposite of what it claims.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon bad">✗</div>
+      <div class="check-content">
+        <h3>Marketing claims not backed by certification</h3>
+        <p>"Clean," "natural," "simple," "wholesome," "pure," "honest," "real" — any of these words appearing alone, without a corresponding third-party certification, are marketing claims with no verification requirement. They tell you about the brand's positioning, not its product.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon bad">✗</div>
+      <div class="check-content">
+        <h3>Front-of-pack claims that don't match the ingredient list</h3>
+        <p>If the front prominently features an ingredient that appears far down the ingredient list by weight, the front is marketing the exception, not the rule. Always read the ingredient list in order — the first three to five ingredients constitute the majority of what you're buying.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon neutral">→</div>
+      <div class="check-content">
+        <h3>Founder story without ownership disclosure</h3>
+        <p>A compelling founder story is not inherently misleading — it may be completely accurate. But if it's the primary identity of the brand and there's no mention of who currently owns the company, it's worth checking. Founders who remain in control typically say so. Those who have sold typically don't mention it.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <div class="check-icon neutral">→</div>
+      <div class="check-content">
+        <h3>Non-GMO claims without the Project seal</h3>
+        <p>The Non-GMO Project Verified seal requires actual testing. "Non-GMO" written in marketing copy or on a label without the seal is a self-reported claim with no third-party verification. The distinction is real but rarely explained on packaging.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THE GOOD: WHAT CERTIFICATIONS MEAN -->
+<div class="good-section">
+  <div class="good-inner">
+    <div class="section-label">Part Five</div>
+    <h2>The Certifications<br><em>Worth Trusting</em></h2>
+    <p class="lead">Four third-party certifications that involve real audits, real standards, and real accountability. Not marketing language.</p>
+
+    <div class="certs-grid">
+      <div class="cert-card">
+        <div class="cert-icon">🌿</div>
+        <div class="cert-name">USDA Certified</div>
+        <h3>Organic</h3>
+        <p>Annual third-party inspection. No synthetic pesticides, fertilizers, or GMOs for crops. Specific animal welfare requirements for livestock. Covers 95–100% of ingredients depending on label tier.</p>
+        <div class="cert-means">The most rigorous and legally enforceable food label claim available in the US.</div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-icon">🅱</div>
+        <div class="cert-name">B Lab Certified</div>
+        <h3>B Corporation</h3>
+        <p>Evaluates the entire company — not just products. Covers governance, worker treatment, community impact, environment, and customer practices. Recertified every three years. Score threshold required.</p>
+        <div class="cert-means">The only common certification that covers who owns the company and how workers are treated.</div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-icon">🧪</div>
+        <div class="cert-name">Non-GMO Project</div>
+        <h3>Verified</h3>
+        <p>Third-party product testing for bioengineered ingredients. Supply chain verification. Annual renewal. The butterfly seal indicates actual testing — not a self-reported claim. High-risk ingredients like corn and soy require ongoing surveillance.</p>
+        <div class="cert-means">The seal matters. "Non-GMO" text without the seal does not carry the same verification.</div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-icon">☕</div>
+        <div class="cert-name">Fair Trade USA</div>
+        <h3>Certified</h3>
+        <p>Farm-level audits covering labor practices, wages, environmental standards, and community development. Most relevant for coffee, chocolate, tea, and tropical fruit. Third-party verified. Farmer cooperatives receive a premium per unit sold.</p>
+        <div class="cert-means">Primarily a supply chain and labor certification — strong for sourcing ethics, less comprehensive on processing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div>
+    <h2>Traced checks ownership.<br><em>You check the label.</em></h2>
+    <p>We track who owns every brand and when that changed. You now know which label claims to verify and which ones to ignore. Use both together.</p>
+  </div>
+  <div class="cta-buttons">
+    <a href="https://tracedhealth.com" class="btn-primary">Search a Brand →</a>
+    <a href="/conglomerate-explainer" class="btn-secondary">← Part 2: Conglomerates</a>
+  </div>
+</div>
+
+<!-- SERIES NAV -->
+<div class="series-nav">
+  <a href="/pe-explainer" class="series-item">
+    <div class="series-item-label">← Part 1</div>
+    <div class="series-item-title">Who's Really Behind Your Food: Private Equity</div>
+  </a>
+  <a href="/conglomerate-explainer" class="series-item">
+    <div class="series-item-label">← Part 2</div>
+    <div class="series-item-title">Five Companies Own What You Eat</div>
+  </a>
+  <a href="/sf-independence-index" class="series-item">
+    <div class="series-item-label">Part 4 →</div>
+    <div class="series-item-title">The SF Independence Index: Which Neighborhoods Eat Independent?</div>
+  </a>
+</div>
+
+<div class="footer-bar">
+  <span>© 2026 TracedHealth · tracedhealth.com</span>
+  <span>Regulatory information sourced from FDA, USDA, and FTC public records</span>
+  <a href="https://tracedhealth.com/methodology">Methodology →</a>
+</div>
+
+</body>
+</html>

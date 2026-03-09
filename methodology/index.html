@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — TracedHealth</title>
+<meta name="description" content="How TracedHealth researches brand ownership, assigns zones, and scores ingredient drift.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f5ef;
+  --surface: #f2ede4;
+  --ink: #1a1610;
+  --muted: rgba(26,22,16,0.45);
+  --border: rgba(26,22,16,0.1);
+  --amber: #b5621e;
+  --red: #9b2c2c;
+  --red-light: rgba(155,44,44,0.07);
+  --green: #2d6a4f;
+  --green-light: rgba(45,106,79,0.07);
+  --yellow: #92620a;
+  --yellow-light: rgba(146,98,10,0.07);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink); font-family: 'Epilogue', sans-serif; font-weight: 300; line-height: 1.7; }
+a { color: inherit; text-decoration: none; }
+
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0;
+  background: var(--bg); z-index: 100;
+}
+.logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.logo span { color: var(--amber); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links .cta { background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 4px; }
+
+.page { max-width: 720px; margin: 0 auto; padding: 64px 40px 80px; }
+.page-eyebrow { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 700; line-height: 1.1; margin-bottom: 24px; }
+.page-intro { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 56px; border-bottom: 1px solid var(--border); padding-bottom: 40px; }
+
+.method-section { margin-bottom: 52px; }
+.method-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 600;
+  margin-bottom: 8px;
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--amber); letter-spacing: .1em;
+  margin-bottom: 12px; display: block;
+}
+.method-body { font-size: 14px; color: var(--muted); line-height: 1.85; margin-bottom: 20px; }
+.method-body p { margin-bottom: 12px; }
+
+/* Zone cards */
+.zone-grid { display: grid; gap: 12px; margin: 24px 0; }
+.zone-card {
+  border-radius: 8px;
+  padding: 20px 22px;
+  border: 1px solid;
+}
+.zone-card.red { background: var(--red-light); border-color: rgba(155,44,44,0.15); }
+.zone-card.yellow { background: var(--yellow-light); border-color: rgba(146,98,10,0.15); }
+.zone-card.green { background: var(--green-light); border-color: rgba(45,106,79,0.15); }
+
+.zone-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.zone-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.zone-dot.red { background: var(--red); }
+.zone-dot.yellow { background: var(--yellow); }
+.zone-dot.green { background: var(--green); }
+.zone-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.zone-label.red { color: var(--red); }
+.zone-label.yellow { color: var(--yellow); }
+.zone-label.green { color: var(--green); }
+.zone-desc { font-size: 13px; line-height: 1.7; }
+.zone-examples { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 8px; }
+
+/* Scoring dimensions */
+.dimensions { margin: 20px 0; }
+.dim {
+  display: grid; grid-template-columns: 180px 1fr;
+  gap: 16px; padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.dim:last-child { border-bottom: none; }
+.dim-name { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); padding-top: 2px; }
+.dim-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* Data sources */
+.sources { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+.source-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+.source-name { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; margin-bottom: 4px; letter-spacing: .06em; }
+.source-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* CTA */
+.method-cta {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 10px;
+  padding: 36px 32px;
+  text-align: center;
+  margin-top: 56px;
+}
+.method-cta h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; margin-bottom: 10px; }
+.method-cta p { font-size: 13px; color: rgba(248,245,239,0.55); margin-bottom: 24px; line-height: 1.7; }
+.cta-btn {
+  display: inline-block;
+  background: var(--amber); color: #fff;
+  padding: 12px 28px; border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  transition: opacity .2s;
+}
+.cta-btn:hover { opacity: .85; }
+
+footer { border-top: 1px solid var(--border); padding: 36px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+.footer-links a:hover { color: var(--ink); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  nav { padding: 14px 20px; }
+  .page { padding: 48px 20px 60px; }
+  .dim { grid-template-columns: 1fr; gap: 6px; }
+  .sources { grid-template-columns: 1fr; }
+  footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">Traced<span>Health</span></a>
+  <div class="nav-links">
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/news">TracedNews</a>
+    <a href="/submit" class="cta">List Your Business</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-eyebrow">Methodology</div>
+  <h1 class="page-title">How TracedHealth Works</h1>
+  <p class="page-intro">TracedHealth is a consumer transparency database covering brand ownership, acquisition history, ingredient changes, and regulatory records. We research brands using public filings, news archives, and regulatory databases — not brand self-reporting. Here's exactly how our data is produced and what our zone system means.</p>
+
+  <!-- DATA SOURCES -->
+  <div class="method-section">
+    <span class="section-num">01</span>
+    <h2>Data Sources</h2>
+    <div class="method-body">
+      <p>Every ownership record in TracedHealth is sourced from at least one of the following primary sources. We do not accept brand self-reporting as evidence of ownership structure.</p>
+    </div>
+    <div class="sources">
+      <div class="source-item">
+        <div class="source-name">SEC EDGAR</div>
+        <div class="source-desc">Form S-1, 10-K, 8-K filings for public company ownership and acquisition disclosures</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">FTC.gov</div>
+        <div class="source-desc">Merger notifications, consent decrees, and enforcement actions against food and supplement brands</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">FDA.gov</div>
+        <div class="source-desc">Warning letters, recall notices, and enforcement databases (CFSAN, CDER)</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">OpenSecrets.org</div>
+        <div class="source-desc">Lobbying expenditures and political contributions by parent companies, including food labeling issues</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">State Corporate Registries</div>
+        <div class="source-desc">LLC and corporation filings to verify beneficial ownership structures</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">Press Archives</div>
+        <div class="source-desc">Reuters, Bloomberg, Food Dive, Eater, and trade press for acquisition announcements</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">Brand Interviews & Founder Statements</div>
+        <div class="source-desc">Used as corroborating evidence only — never as primary ownership proof</div>
+      </div>
+      <div class="source-item">
+        <div class="source-name">EWG & Cornucopia Institute</div>
+        <div class="source-desc">Ingredient testing records and organic certification audits</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZONE SYSTEM -->
+  <div class="method-section">
+    <span class="section-num">02</span>
+    <h2>Zone System</h2>
+    <div class="method-body">
+      <p>Every brand in TracedHealth is assigned one of three zones based on its ownership structure. The zone reflects who controls the brand — not whether the product is "healthy" or "clean."</p>
+    </div>
+    <div class="zone-grid">
+      <div class="zone-card red">
+        <div class="zone-header">
+          <div class="zone-dot red"></div>
+          <div class="zone-label red">Red Zone</div>
+        </div>
+        <div class="zone-desc">Owned by a private equity firm, publicly traded conglomerate (Nestlé, Unilever, PepsiCo, etc.), or a foreign state-linked entity. The original founders have typically exited. Profit extraction is the primary operational mandate.</div>
+        <div class="zone-examples">Examples: Annie's (General Mills), Siete (PepsiCo), Stumptown (JAB/Peet's), Hu Kitchen (Mondelēz)</div>
+      </div>
+      <div class="zone-card yellow">
+        <div class="zone-header">
+          <div class="zone-dot yellow"></div>
+          <div class="zone-label yellow">Yellow Zone</div>
+        </div>
+        <div class="zone-desc">VC-backed, publicly traded as an independent company, or ownership is unclear or in transition. Yellow brands may retain founder involvement but have outside investors with exit pressure. Acquisition risk is elevated.</div>
+        <div class="zone-examples">Examples: Chobani (TPG stake), Oatly (Blackstone + public), Banza (VC-backed), Vital Farms (NASDAQ:VITL)</div>
+      </div>
+      <div class="zone-card green">
+        <div class="zone-header">
+          <div class="zone-dot green"></div>
+          <div class="zone-label green">Green Zone</div>
+        </div>
+        <div class="zone-desc">Verified founder-owned, family-owned, employee-owned (ESOP), or member-owned cooperative. No PE investment. Founders retain operational control. Profits stay within the founding team or employee base.</div>
+        <div class="zone-examples">Examples: GT's Kombucha, Bob's Red Mill (ESOP), Organic Valley (co-op), Franklin Barbecue, PCC Community Markets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7-DIMENSION SCORING -->
+  <div class="method-section">
+    <span class="section-num">03</span>
+    <h2>7-Dimension Scoring Framework</h2>
+    <div class="method-body">
+      <p>Beyond the zone, TracedHealth scores each brand across seven dimensions of transparency. These scores are shown in the full brand profile and inform our Contradiction Score — a measure of how much a brand's "clean" or "natural" marketing conflicts with its parent company's regulatory and lobbying record.</p>
+    </div>
+    <div class="dimensions">
+      <div class="dim">
+        <div class="dim-name">Ownership Clarity</div>
+        <div class="dim-desc">Is the ultimate beneficial owner publicly documented? Do founders still hold voting control or have they exited?</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Ingredient Integrity</div>
+        <div class="dim-desc">Has the formula changed post-acquisition? Were organic or non-GMO certifications maintained or quietly dropped?</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Regulatory Record</div>
+        <div class="dim-desc">FTC enforcement actions, FDA warning letters, class action settlements, and recall history — at the brand and parent company level.</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Lobbying Alignment</div>
+        <div class="dim-desc">Does the parent company lobby against GMO labeling, organic standards, or sugar taxes while owning brands that market themselves as "clean" or "natural"?</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Marketing Claims</div>
+        <div class="dim-desc">Are "all natural," "simple ingredients," or "no B.S." claims substantiated — or do they conflict with ingredient lists, ownership structure, or legal settlements?</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Price Trajectory</div>
+        <div class="dim-desc">Did retail prices increase materially post-acquisition while ingredients shifted to lower-cost alternatives?</div>
+      </div>
+      <div class="dim">
+        <div class="dim-name">Community Impact</div>
+        <div class="dim-desc">For local and independent brands: employment model, sourcing practices, community investment, and years in operation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY CORRECTIONS -->
+  <div class="method-section">
+    <span class="section-num">04</span>
+    <h2>Community Corrections</h2>
+    <div class="method-body">
+      <p>TracedHealth data is manually researched and periodically updated. If you spot an error — an incorrect ownership record, a missing acquisition, or a zone that no longer reflects current structure — we want to know.</p>
+      <p>Independent businesses can also submit their information directly through our submission form. Verified independent businesses receive the green badge, which appears when their brand is looked up in TracedHealth or scanned with the barcode scanner.</p>
+    </div>
+  </div>
+
+  <div class="method-cta">
+    <h3>Own an independent food or beverage business?</h3>
+    <p>Get the TracedHealth green badge — verified founder-owned, family-owned, or co-op status. It takes about 5 minutes to apply.</p>
+    <a class="cta-btn" href="/submit">Submit Your Business →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">TracedHealth</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/scanner">Scanner</a>
+    <a href="/research">Research</a>
+    <a href="/news">TracedNews</a>
+    <a href="/submit">Submit Business</a>
+  </div>
+  <div class="footer-copy">© 2026 TracedHealth</div>
+</footer>
+</body>
+</html>

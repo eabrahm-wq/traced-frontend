@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Companies Own What You Eat — TracedHealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --bg-dark: #ede9e1;
+    --black: #111010;
+    --ink: #1c1b19;
+    --mid: #6b6760;
+    --dim: #9e9b96;
+    --rule: #d4cfc7;
+    --red: #b83a2a;
+    --red-light: #f5ede9;
+    --gold: #b8860b;
+    --gold-light: #f5f0e0;
+    --green: #2a6b45;
+    --green-light: #e8f2ec;
+    --blue: #1e4a7a;
+    --blue-light: #e8eef5;
+    --orange: #c45c1a;
+    --orange-light: #f5ede5;
+    --purple: #5a3a7a;
+    --purple-light: #ede8f5;
+    --serif: 'Syne', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo { font-family: var(--mono); font-size: 12px; letter-spacing: 0.15em; color: var(--gold); text-decoration: none; text-transform: uppercase; }
+  .nav-tag { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--black);
+    color: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'CONGLOMERATES';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: var(--serif);
+    font-size: 120px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    margin-bottom: 32px;
+  }
+
+  .hero h1 .accent { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 18px;
+    color: rgba(245,242,236,0.6);
+    max-width: 560px;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* COUNTER ROW */
+  .counter-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .counter-cell {
+    padding: 40px 32px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .counter-cell:last-child { border-right: none; }
+
+  .counter-num {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .counter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* SECTION BASE */
+  .section {
+    padding: 100px 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--dim); }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+
+  .lead {
+    font-size: 17px;
+    color: var(--mid);
+    max-width: 640px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  /* CONGLOMERATE CARDS */
+  .conglo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--rule);
+  }
+
+  .conglo-card {
+    background: var(--bg);
+    padding: 52px 48px;
+    position: relative;
+  }
+
+  .conglo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+
+  .conglo-name {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .conglo-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 6px 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .conglo-hq {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .conglo-stat-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .conglo-stat { }
+  .conglo-stat-num {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .conglo-stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .conglo-brands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .brand-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+    background: var(--bg-dark);
+    color: var(--ink);
+    letter-spacing: 0.05em;
+  }
+
+  .brand-pill.traced {
+    border-color: currentColor;
+  }
+
+  .conglo-finding {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.6;
+    padding: 16px;
+    border-left: 2px solid var(--rule);
+    margin-top: 20px;
+  }
+
+  /* COLOR ACCENTS PER COMPANY */
+  .nestled .conglo-name { color: var(--red); }
+  .nestled .conglo-badge { background: var(--red-light); color: var(--red); }
+  .nestled .conglo-stat-num { color: var(--red); }
+  .nestled .brand-pill.traced { color: var(--red); border-color: var(--red); background: var(--red-light); }
+  .nestled .conglo-finding { border-color: var(--red); }
+
+  .pepsi .conglo-name { color: var(--blue); }
+  .pepsi .conglo-badge { background: var(--blue-light); color: var(--blue); }
+  .pepsi .conglo-stat-num { color: var(--blue); }
+  .pepsi .brand-pill.traced { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
+  .pepsi .conglo-finding { border-color: var(--blue); }
+
+  .unilever .conglo-name { color: var(--orange); }
+  .unilever .conglo-badge { background: var(--orange-light); color: var(--orange); }
+  .unilever .conglo-stat-num { color: var(--orange); }
+  .unilever .brand-pill.traced { color: var(--orange); border-color: var(--orange); background: var(--orange-light); }
+  .unilever .conglo-finding { border-color: var(--orange); }
+
+  .generalmills .conglo-name { color: var(--gold); }
+  .generalmills .conglo-badge { background: var(--gold-light); color: var(--gold); }
+  .generalmills .conglo-stat-num { color: var(--gold); }
+  .generalmills .brand-pill.traced { color: var(--gold); border-color: var(--gold); background: var(--gold-light); }
+  .generalmills .conglo-finding { border-color: var(--gold); }
+
+  .mondelez .conglo-name { color: var(--purple); }
+  .mondelez .conglo-badge { background: var(--purple-light); color: var(--purple); }
+  .mondelez .conglo-stat-num { color: var(--purple); }
+  .mondelez .brand-pill.traced { color: var(--purple); border-color: var(--purple); background: var(--purple-light); }
+  .mondelez .conglo-finding { border-color: var(--purple); }
+
+  .danone .conglo-name { color: var(--green); }
+  .danone .conglo-badge { background: var(--green-light); color: var(--green); }
+  .danone .conglo-stat-num { color: var(--green); }
+  .danone .brand-pill.traced { color: var(--green); border-color: var(--green); background: var(--green-light); }
+  .danone .conglo-finding { border-color: var(--green); }
+
+  /* WHAT CONGLOMERATES DO */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--rule);
+    margin-top: 48px;
+  }
+
+  .how-cell {
+    background: var(--bg);
+    padding: 40px 36px;
+  }
+
+  .how-num {
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--rule);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .how-cell h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .how-cell p {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.65;
+  }
+
+  /* VS PE TABLE */
+  .vs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 48px;
+  }
+
+  .vs-table th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    text-align: left;
+    border-bottom: 2px solid var(--ink);
+    color: var(--ink);
+  }
+
+  .vs-table th:first-child { width: 28%; }
+
+  .vs-table td {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--mid);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .vs-table td:first-child {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .vs-table tr:hover td { background: var(--bg-dark); }
+
+  /* THE ILLUSION SECTION */
+  .illusion-section {
+    background: var(--black);
+    color: var(--bg);
+    padding: 100px 48px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .illusion-section .section-label { color: rgba(245,242,236,0.3); }
+  .illusion-section .section-label::before { background: rgba(245,242,236,0.3); }
+  .illusion-section h2 { color: var(--bg); }
+  .illusion-section .lead { color: rgba(245,242,236,0.5); }
+
+  .illusion-examples {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: #2a2a2a;
+    margin-top: 48px;
+  }
+
+  .illusion-item {
+    background: #1a1a1a;
+    padding: 32px 28px;
+  }
+
+  .illusion-brand {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--bg);
+  }
+
+  .illusion-perceived {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.3);
+    margin-bottom: 12px;
+  }
+
+  .illusion-reality {
+    font-size: 13px;
+    color: rgba(245,242,236,0.6);
+    line-height: 1.55;
+  }
+
+  .illusion-reality strong {
+    color: var(--gold);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 48px;
+    background: var(--bg-dark);
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .cta-section h2 { font-size: clamp(28px, 3.5vw, 44px); }
+  .cta-section .lead { margin-bottom: 0; }
+
+  .cta-buttons { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--bg);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.8; }
+
+  .btn-secondary {
+    border: 1px solid var(--rule);
+    color: var(--mid);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* FOOTER */
+  .footer-bar {
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+  }
+  .footer-bar span { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+  .footer-bar a { font-family: var(--mono); font-size: 11px; color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 80px 24px 60px; }
+    .section { padding: 72px 24px; }
+    .counter-row { grid-template-columns: repeat(2, 1fr); }
+    .conglo-grid { grid-template-columns: 1fr; }
+    .how-grid { grid-template-columns: 1fr; }
+    .illusion-examples { grid-template-columns: 1fr 1fr; }
+    .cta-section { grid-template-columns: 1fr; gap: 40px; }
+    .cta-buttons { flex-direction: row; }
+    .footer-bar { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://tracedhealth.com" class="nav-logo">TracedHealth</a>
+  <span class="nav-tag">Explainer Series · Part 2</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Explainer Series — Part Two</div>
+  <h1>Five Companies<br>Own <span class="accent">What</span><br>You Eat</h1>
+  <p class="hero-sub">You think you're choosing between dozens of brands. In most grocery store aisles, you're choosing between subsidiaries of the same five companies. Here's who they are and how they got here.</p>
+</div>
+
+<!-- COUNTER ROW -->
+<div class="counter-row">
+  <div class="counter-cell">
+    <div class="counter-num" style="color: var(--red);">$350B+</div>
+    <div class="counter-label">Nestlé annual<br>revenue</div>
+  </div>
+  <div class="counter-cell">
+    <div class="counter-num" style="color: var(--blue);">2,000+</div>
+    <div class="counter-label">Brands owned by<br>top 10 food conglomerates</div>
+  </div>
+  <div class="counter-cell">
+    <div class="counter-num" style="color: var(--gold);">80%</div>
+    <div class="counter-label">Of US grocery<br>brands controlled by<br>10 companies</div>
+  </div>
+  <div class="counter-cell">
+    <div class="counter-num" style="color: var(--orange);">$9.8B</div>
+    <div class="counter-label">Coca-Cola annual<br>lobbying + political<br>spend</div>
+  </div>
+  <div class="counter-cell">
+    <div class="counter-num" style="color: var(--green);">0</div>
+    <div class="counter-label">Labels required<br>to disclose<br>ultimate owner</div>
+  </div>
+</div>
+
+<!-- HOW CONGLOMERATES DIFFER FROM PE -->
+<div class="section">
+  <div class="section-label">Part One</div>
+  <h2>Conglomerate vs. Private Equity — What's the Difference?</h2>
+  <p class="lead">They're often confused. PE firms buy brands to flip them. Conglomerates buy brands to keep them — permanently. That distinction changes everything about how they behave as owners.</p>
+
+  <table class="vs-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Private Equity</th>
+        <th>Food Conglomerate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Time horizon</td>
+        <td>5–7 years (fund cycle forces exit)</td>
+        <td>Indefinite — brands held for decades</td>
+      </tr>
+      <tr>
+        <td>Primary goal</td>
+        <td>Maximize exit multiple, generate carry</td>
+        <td>Extract steady cash flow, expand shelf presence</td>
+      </tr>
+      <tr>
+        <td>How they make money</td>
+        <td>Carried interest on sale profit</td>
+        <td>Operating margin across entire brand portfolio</td>
+      </tr>
+      <tr>
+        <td>What happens to brand after acquisition</td>
+        <td>Optimized for sale — margin expansion, debt load</td>
+        <td>Integrated into portfolio — cross-selling, shared distribution</td>
+      </tr>
+      <tr>
+        <td>Consumer transparency</td>
+        <td>No disclosure required — private by design</td>
+        <td>Public company disclosures, but brand ownership buried</td>
+      </tr>
+      <tr>
+        <td>Lobbying behavior</td>
+        <td>Minimal — prefer opacity</td>
+        <td>Aggressive — billions spent opposing labeling, regulation</td>
+      </tr>
+      <tr>
+        <td>Examples in food</td>
+        <td>Roark Capital (Arby's, Sonic), L Catterton (Hippeas), KKR (Nature's Bounty)</td>
+        <td>Nestlé, PepsiCo, Unilever, Mondelēz, General Mills</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- HOW THEY OPERATE -->
+<div class="section" style="background: var(--bg-dark);">
+  <div class="section-label">Part Two</div>
+  <h2>How Conglomerates<br>Build Their Portfolios</h2>
+  <p class="lead">Food conglomerates don't innovate — they acquire. Every "new" clean-label brand that lands on grocery shelves is a potential acquisition target. The playbook is consistent across all of them.</p>
+
+  <div class="how-grid">
+    <div class="how-cell">
+      <div class="how-num">01</div>
+      <h3>Identify independent brands with consumer trust</h3>
+      <p>They track independent brands that have built genuine consumer loyalty — particularly in "better for you" categories where trust is the core product. A brand with a loyal following and clean ingredients is worth more than the revenue alone.</p>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">02</div>
+      <h3>Acquire before the brand scales its own distribution</h3>
+      <p>The optimal acquisition window is after proof of concept but before the brand has built its own national distribution. At that point the founder is often exhausted, the brand needs capital to scale, and the conglomerate can offer both a premium price and instant shelf access.</p>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">03</div>
+      <h3>Maintain brand identity, integrate operations</h3>
+      <p>The brand's visual identity, founding story, and positioning stay intact — they're the asset. Operations get folded into shared manufacturing, distribution, and procurement infrastructure. This is where cost savings come from.</p>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">04</div>
+      <h3>Expand distribution through existing retail relationships</h3>
+      <p>Nestlé, PepsiCo, and Unilever have long-standing relationships with every major retailer. An acquired brand immediately gains access to shelf space it couldn't have negotiated independently. Sales typically increase post-acquisition.</p>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">05</div>
+      <h3>Gradually rationalize the product line</h3>
+      <p>SKUs that don't perform get cut. Premium ingredients get value-engineered over time. The process is slow and rarely announced. The consumer sees the same product name and packaging — the formula changes are rarely disclosed proactively.</p>
+    </div>
+    <div class="how-cell">
+      <div class="how-num">06</div>
+      <h3>Use the acquired brand to neutralize competition</h3>
+      <p>When a competitor brand is threatening market share, acquiring it is often cheaper than competing against it. Conglomerates routinely own competing brands in the same category. The "competition" on the grocery shelf is frequently ownership theater.</p>
+    </div>
+  </div>
+</div>
+
+<!-- THE 6 MAJOR CONGLOMERATES -->
+<div class="section">
+  <div class="section-label">Part Three</div>
+  <h2>The Six Companies<br>That Matter Most</h2>
+  <p class="lead">These are the conglomerates most represented in US grocery and health food aisles. Brands marked in color are in the Traced database.</p>
+
+  <div class="conglo-grid">
+
+    <!-- NESTLÉ -->
+    <div class="conglo-card nestled">
+      <div class="conglo-header">
+        <div class="conglo-name">Nestlé</div>
+        <div class="conglo-badge">Swiss · Public · SIX: NESN</div>
+      </div>
+      <div class="conglo-hq">HQ: Vevey, Switzerland · Founded 1866 · ~275,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$95B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">47</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$3.2M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Garden of Life</span>
+        <span class="brand-pill traced">Perfect Bar</span>
+        <span class="brand-pill traced">Nuun</span>
+        <span class="brand-pill">Häagen-Dazs</span>
+        <span class="brand-pill">Lean Cuisine</span>
+        <span class="brand-pill">Stouffer's</span>
+        <span class="brand-pill">Purina</span>
+        <span class="brand-pill">Nespresso</span>
+        <span class="brand-pill">KitKat (US)</span>
+        <span class="brand-pill">Toll House</span>
+        <span class="brand-pill">Poland Spring</span>
+        <span class="brand-pill">Perrier</span>
+      </div>
+      <div class="conglo-finding">Notable: Nestlé sold Blue Bottle Coffee to Centurium Capital (Luckin Coffee backer) in March 2026 for under $400M — less than the ~$500M it paid. A rare exit from specialty coffee after 9 years.</div>
+    </div>
+
+    <!-- PEPSICO -->
+    <div class="conglo-card pepsi">
+      <div class="conglo-header">
+        <div class="conglo-name">PepsiCo</div>
+        <div class="conglo-badge">US · Public · NASDAQ: PEP</div>
+      </div>
+      <div class="conglo-hq">HQ: Purchase, New York · Founded 1965 · ~315,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$91B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">38</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$9.4M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Siete Foods</span>
+        <span class="brand-pill traced">Poppi</span>
+        <span class="brand-pill traced">Kevita</span>
+        <span class="brand-pill traced">Naked Juice</span>
+        <span class="brand-pill traced">Tropicana</span>
+        <span class="brand-pill">Lay's</span>
+        <span class="brand-pill">Doritos</span>
+        <span class="brand-pill">Quaker Oats</span>
+        <span class="brand-pill">Gatorade</span>
+        <span class="brand-pill">Cheetos</span>
+        <span class="brand-pill">SodaStream</span>
+        <span class="brand-pill">Sabra</span>
+      </div>
+      <div class="conglo-finding">Notable: Acquired Siete Foods for $1.2B in January 2025 and Poppi for $1.65B in 2025 — two direct acquisitions of brands built on "clean" and "better for you" positioning within 12 months.</div>
+    </div>
+
+    <!-- UNILEVER -->
+    <div class="conglo-card unilever">
+      <div class="conglo-header">
+        <div class="conglo-name">Unilever</div>
+        <div class="conglo-badge">Anglo-Dutch · Public · LSE: ULVR</div>
+      </div>
+      <div class="conglo-hq">HQ: London, UK · Founded 1929 · ~127,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$65B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">24</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$6.2M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Liquid I.V.</span>
+        <span class="brand-pill traced">Harmless Harvest</span>
+        <span class="brand-pill">Ben & Jerry's</span>
+        <span class="brand-pill">Hellmann's</span>
+        <span class="brand-pill">Knorr</span>
+        <span class="brand-pill">Dove</span>
+        <span class="brand-pill">Sir Kensington's</span>
+        <span class="brand-pill">Seventh Generation</span>
+        <span class="brand-pill">Talenti</span>
+        <span class="brand-pill">Breyers</span>
+      </div>
+      <div class="conglo-finding">Notable: Acquired Liquid I.V. in 2020 and Harmless Harvest in 2017 — two brands with strong "natural" and "functional hydration" positioning that now sit inside a $65B conglomerate that also makes Axe body spray.</div>
+    </div>
+
+    <!-- MONDELĒZ -->
+    <div class="conglo-card mondelez">
+      <div class="conglo-header">
+        <div class="conglo-name">Mondelēz</div>
+        <div class="conglo-badge">US · Public · NASDAQ: MDLZ</div>
+      </div>
+      <div class="conglo-hq">HQ: Chicago, Illinois · Founded 2012 (Kraft spinoff) · ~91,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$36B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">18</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$3.8M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Clif Bar</span>
+        <span class="brand-pill traced">Hu Kitchen</span>
+        <span class="brand-pill">Oreo</span>
+        <span class="brand-pill">Cadbury</span>
+        <span class="brand-pill">Chips Ahoy</span>
+        <span class="brand-pill">Ritz</span>
+        <span class="brand-pill">Triscuit</span>
+        <span class="brand-pill">Wheat Thins</span>
+        <span class="brand-pill">Toblerone</span>
+        <span class="brand-pill">belVita</span>
+      </div>
+      <div class="conglo-finding">Notable: Mondelēz acquired Clif Bar in 2022 for $2.9B and Hu Kitchen in 2021 for $340M. Both brands were explicitly positioned against processed food. Mondelēz's core business is processed snacks.</div>
+    </div>
+
+    <!-- GENERAL MILLS -->
+    <div class="conglo-card generalmills">
+      <div class="conglo-header">
+        <div class="conglo-name">General Mills</div>
+        <div class="conglo-badge">US · Public · NYSE: GIS</div>
+      </div>
+      <div class="conglo-hq">HQ: Golden Valley, Minnesota · Founded 1866 · ~35,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$20B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">22</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$5.6M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Annie's</span>
+        <span class="brand-pill traced">Lärabar</span>
+        <span class="brand-pill">Cheerios</span>
+        <span class="brand-pill">Häagen-Dazs (non-US)</span>
+        <span class="brand-pill">Nature Valley</span>
+        <span class="brand-pill">Cascadian Farm</span>
+        <span class="brand-pill">Pillsbury</span>
+        <span class="brand-pill">Betty Crocker</span>
+        <span class="brand-pill">Yoplait</span>
+        <span class="brand-pill">Old El Paso</span>
+      </div>
+      <div class="conglo-finding">Notable: General Mills owns both Annie's (organic, "feel good" brand) and Cascadian Farm (organic pioneer) — both acquired to capture organic market share. Neither brand acknowledges General Mills ownership in its marketing.</div>
+    </div>
+
+    <!-- DANONE -->
+    <div class="conglo-card danone">
+      <div class="conglo-header">
+        <div class="conglo-name">Danone</div>
+        <div class="conglo-badge">French · Public · EPA: BN</div>
+      </div>
+      <div class="conglo-hq">HQ: Paris, France · Founded 1919 · ~96,000 employees</div>
+      <div class="conglo-stat-row">
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$30B</div>
+          <div class="conglo-stat-label">Annual revenue</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">16</div>
+          <div class="conglo-stat-label">Documented violations</div>
+        </div>
+        <div class="conglo-stat">
+          <div class="conglo-stat-num">$2.1M</div>
+          <div class="conglo-stat-label">Annual lobbying (US)</div>
+        </div>
+      </div>
+      <div class="conglo-brands">
+        <span class="brand-pill traced">Oikos</span>
+        <span class="brand-pill traced">Two Good</span>
+        <span class="brand-pill traced">Harmless Harvest</span>
+        <span class="brand-pill traced">Vega</span>
+        <span class="brand-pill">Evian</span>
+        <span class="brand-pill">Activia</span>
+        <span class="brand-pill">Stonyfield</span>
+        <span class="brand-pill">Silk</span>
+        <span class="brand-pill">So Delicious</span>
+        <span class="brand-pill">Horizon Organic</span>
+      </div>
+      <div class="conglo-finding">Notable: Danone owns Stonyfield (sold to Lactalis 2017), Horizon Organic, Silk, and So Delicious — a near-complete ownership of US organic dairy and plant-based milk alternatives. One company, multiple "independent-feeling" brands.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- THE ILLUSION OF CHOICE -->
+<div class="illusion-section">
+  <div class="section-label">Part Four</div>
+  <h2 style="color: var(--bg);">The Illusion<br>of Choice</h2>
+  <p class="lead">These are brands consumers associate with independence, clean ingredients, or founder values. Each is a subsidiary of a major conglomerate. None are required to say so on the label.</p>
+
+  <div class="illusion-examples">
+    <div class="illusion-item">
+      <div class="illusion-brand">Annie's</div>
+      <div class="illusion-perceived">Perceived: Small organic brand</div>
+      <div class="illusion-reality"><strong>Reality: General Mills</strong>Acquired 2014 for $820M. The rabbit mascot and "homegrown" aesthetic are intact. General Mills also owns Pillsbury and Betty Crocker.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Liquid I.V.</div>
+      <div class="illusion-perceived">Perceived: Startup health brand</div>
+      <div class="illusion-reality"><strong>Reality: Unilever</strong>Acquired 2020. Unilever's portfolio spans Dove soap, Knorr bouillon, and Ben & Jerry's — a $65B conglomerate with no particular focus on "functional wellness."</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Hu Kitchen</div>
+      <div class="illusion-perceived">Perceived: Clean chocolate pioneer</div>
+      <div class="illusion-reality"><strong>Reality: Mondelēz</strong>Acquired 2021 for $340M. Mondelēz's flagship products are Oreo and Cadbury. Hu Kitchen was built in explicit opposition to that type of product.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Harmless Harvest</div>
+      <div class="illusion-perceived">Perceived: Independent coconut water</div>
+      <div class="illusion-reality"><strong>Reality: Danone</strong>Acquired 2017. The brand built its identity on fair trade sourcing and small-farm relationships. Danone is a $30B European conglomerate.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Siete Foods</div>
+      <div class="illusion-perceived">Perceived: Family-owned health brand</div>
+      <div class="illusion-reality"><strong>Reality: PepsiCo</strong>Acquired January 2025 for $1.2B. Founded by the Garza family, sold to the company that makes Doritos and Mountain Dew. Acquisition closed 8 months ago.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Garden of Life</div>
+      <div class="illusion-perceived">Perceived: Organic supplement brand</div>
+      <div class="illusion-reality"><strong>Reality: Nestlé Health Science</strong>Acquired 2017 for $305M. Now sits alongside Nestlé's pharmaceutical nutrition division, medical nutrition products, and other health supplement acquisitions.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Lärabar</div>
+      <div class="illusion-perceived">Perceived: Minimal-ingredient bar</div>
+      <div class="illusion-reality"><strong>Reality: General Mills</strong>Acquired 2008 for $60M — one of the earliest "clean bar" acquisitions. General Mills has held it for 17 years alongside Cheerios and Betty Crocker.</div>
+    </div>
+    <div class="illusion-item">
+      <div class="illusion-brand">Poppi</div>
+      <div class="illusion-perceived">Perceived: Millennial-founded soda brand</div>
+      <div class="illusion-reality"><strong>Reality: PepsiCo</strong>Acquired 2025 for $1.65B. Founded 2018 by Allison and Stephen Ellsworth. PepsiCo now owns both the legacy Pepsi brand and the brand built to replace it.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div>
+    <div class="section-label">What To Do With This</div>
+    <h2>Every brand in<br>Traced shows the<br>full ownership chain</h2>
+    <p class="lead">Search any brand or scan any barcode. No account required. Updated as acquisitions happen — including the ones announced this week.</p>
+  </div>
+  <div class="cta-buttons">
+    <a href="https://tracedhealth.com" class="btn-primary">Search a Brand →</a>
+    <a href="/pe-explainer" class="btn-secondary">← Part 1: Private Equity</a>
+  </div>
+</div>
+
+<div class="footer-bar">
+  <span>© 2026 TracedHealth · tracedhealth.com</span>
+  <span>Revenue and violation data from public filings and regulatory records</span>
+  <a href="https://tracedhealth.com/methodology">Methodology →</a>
+</div>
+
+</body>
+</html>

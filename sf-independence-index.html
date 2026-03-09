@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The SF Independence Index — TracedHealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f5ef;
+    --bg-mid: #f0ebe0;
+    --bg-dark: #e8e2d4;
+    --ink: #1a1714;
+    --mid: #6b6560;
+    --dim: #a09890;
+    --rule: #d8d0c4;
+    --green: #2a6b3a;
+    --green-light: #e8f2ea;
+    --green-mid: #4a9a5e;
+    --yellow: #b8920a;
+    --yellow-light: #f5f0d8;
+    --red: #b02a1e;
+    --red-light: #f5ebe8;
+    --black: #0f0e0c;
+    --serif: 'Libre Baskerville', Georgia, serif;
+    --display: 'Bebas Neue', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    padding: 0 48px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--ink);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .nav-logo { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--yellow); text-decoration: none; text-transform: uppercase; }
+  .nav-right { display: flex; gap: 32px; align-items: center; }
+  .nav-tag { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 80px 48px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .masthead-year {
+    font-family: var(--display);
+    font-size: 280px;
+    color: rgba(248,245,239,0.04);
+    position: absolute;
+    right: -20px;
+    bottom: -40px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+
+  .masthead-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(248,245,239,0.4);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .masthead h1 {
+    font-family: var(--display);
+    font-size: clamp(64px, 10vw, 128px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+    margin-bottom: 8px;
+  }
+
+  .masthead h1 .accent { color: var(--yellow); }
+
+  .masthead-sub {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+    color: rgba(248,245,239,0.6);
+    max-width: 600px;
+    margin-top: 24px;
+    line-height: 1.55;
+  }
+
+  .masthead-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(248,245,239,0.1);
+  }
+
+  .masthead-meta-item {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(248,245,239,0.35);
+    text-transform: uppercase;
+  }
+
+  .masthead-meta-item span {
+    display: block;
+    color: rgba(248,245,239,0.7);
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  /* SCORE LEGEND */
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .legend-cell {
+    padding: 24px 32px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .legend-cell:last-child { border-right: none; }
+
+  .legend-score {
+    font-family: var(--display);
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .legend-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .legend-desc {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+
+  .score-a { color: var(--green); }
+  .score-b { color: #4a8a2a; }
+  .score-c { color: var(--yellow); }
+  .score-d { color: #a05820; }
+  .score-f { color: var(--red); }
+
+  /* NEIGHBORHOOD RANKINGS */
+  .rankings-section {
+    padding: 80px 48px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .rankings-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .rankings-header h2 {
+    font-family: var(--display);
+    font-size: 56px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .rankings-header-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    max-width: 280px;
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  .rankings-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .rankings-table thead th {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-align: left;
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .rankings-table thead th:last-child { text-align: right; }
+
+  .rank-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 120px 120px 120px 80px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+    transition: background 0.15s;
+    gap: 16px;
+  }
+
+  .rank-row:hover { background: var(--bg-mid); margin: 0 -48px; padding: 24px 48px; }
+
+  .rank-num {
+    font-family: var(--display);
+    font-size: 32px;
+    color: var(--rule);
+    line-height: 1;
+  }
+
+  .rank-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .rank-name span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--dim);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-style: normal;
+  }
+
+  .rank-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .rank-bar {
+    height: 6px;
+    background: var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rank-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    transition: width 1s ease;
+  }
+
+  .rank-bar-fill.green { background: var(--green); }
+  .rank-bar-fill.yellow { background: var(--yellow); }
+  .rank-bar-fill.red { background: var(--red); }
+
+  .rank-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mid);
+  }
+
+  .rank-score {
+    font-family: var(--display);
+    font-size: 40px;
+    text-align: right;
+    line-height: 1;
+  }
+
+  .rank-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 6px 10px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .rank-tag.up { background: var(--green-light); color: var(--green); }
+  .rank-tag.down { background: var(--red-light); color: var(--red); }
+  .rank-tag.hold { background: var(--bg-dark); color: var(--mid); }
+
+  /* NEIGHBORHOOD SPOTLIGHTS */
+  .spotlights {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .spotlight {
+    padding: 52px 48px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .spotlight:last-child { border-right: none; }
+
+  .spotlight-grade {
+    font-family: var(--display);
+    font-size: 96px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .spotlight-name {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .spotlight-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .spotlight-stat-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .spotlight-stat { }
+  .spotlight-stat-num { font-family: var(--display); font-size: 32px; line-height: 1; margin-bottom: 2px; }
+  .spotlight-stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; color: var(--dim); text-transform: uppercase; }
+
+  .spotlight-brands {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .spotlight-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-mid);
+  }
+
+  .spotlight-brand-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .spotlight-brand-dot.green { background: var(--green); }
+  .spotlight-brand-dot.red { background: var(--red); }
+
+  .spotlight-brand-name { font-size: 14px; font-weight: 500; }
+  .spotlight-brand-status { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-left: auto; letter-spacing: 0.08em; }
+
+  .spotlight-finding {
+    margin-top: 24px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.6;
+    padding-left: 14px;
+    border-left: 2px solid var(--rule);
+  }
+
+  /* METHODOLOGY */
+  .methodology {
+    padding: 80px 48px;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+
+  .methodology h2 {
+    font-family: var(--display);
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  .methodology-factors {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .factor {
+    padding: 20px 24px;
+    background: var(--bg-mid);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .factor-weight {
+    font-family: var(--display);
+    font-size: 32px;
+    color: var(--yellow);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 56px;
+    text-align: right;
+  }
+
+  .factor-content h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .factor-content p {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.5;
+    max-width: none;
+  }
+
+  /* DATA CALLOUT */
+  .data-callout {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 80px 48px;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+  }
+
+  .callout-stat {
+    padding: 0 32px;
+    border-right: 1px solid rgba(248,245,239,0.1);
+  }
+  .callout-stat:first-child { padding-left: 0; }
+  .callout-stat:last-child { border-right: none; }
+
+  .callout-num {
+    font-family: var(--display);
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(248,245,239,0.4);
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* CTA / NEXT -->
+  .next-section {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 80px;
+    padding: 80px 48px;
+    border-bottom: 2px solid var(--ink);
+    align-items: center;
+  }
+
+  .next-section h2 {
+    font-family: var(--display);
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+
+  .next-section p {
+    font-size: 16px;
+    color: var(--mid);
+    max-width: 480px;
+    line-height: 1.65;
+  }
+
+  .next-buttons { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.75; }
+
+  .btn-secondary {
+    border: 1px solid var(--rule);
+    color: var(--mid);
+    padding: 16px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* SERIES FOOTER */
+  .series-footer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 2px solid var(--ink);
+  }
+
+  .series-item {
+    padding: 32px 36px;
+    border-right: 1px solid var(--rule);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .series-item:last-child { border-right: none; }
+  .series-item:hover { background: var(--bg-mid); }
+
+  .series-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; }
+  .series-title { font-family: var(--serif); font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+
+  .footer-bar {
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+  }
+  .footer-bar span { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.08em; }
+  .footer-bar a { font-family: var(--mono); font-size: 10px; color: var(--yellow); text-decoration: none; }
+
+  @media (max-width: 900px) {
+    nav, .masthead, .rankings-section, .methodology, .next-section, .data-callout { padding-left: 24px; padding-right: 24px; }
+    .legend { grid-template-columns: repeat(2, 1fr); }
+    .rank-row { grid-template-columns: 40px 1fr 80px; }
+    .rank-bar-wrap, .rank-tag { display: none; }
+    .spotlights { grid-template-columns: 1fr; }
+    .methodology { grid-template-columns: 1fr; gap: 40px; }
+    .data-callout { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .callout-stat { border-right: none; padding: 0; }
+    .next-section { grid-template-columns: 1fr; gap: 40px; }
+    .next-buttons { flex-direction: row; }
+    .series-footer { grid-template-columns: 1fr 1fr; }
+    .footer-bar { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://tracedhealth.com" class="nav-logo">TracedHealth</a>
+  <div class="nav-right">
+    <span class="nav-tag">2026 Annual Report</span>
+  </div>
+</nav>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-year">2026</div>
+  <div class="masthead-kicker">TracedHealth · Annual Report · San Francisco</div>
+  <h1>THE SF<br><span class="accent">INDEPENDENCE</span><br>INDEX</h1>
+  <p class="masthead-sub">Ranking every San Francisco neighborhood by how much of its food economy is independently owned — and tracking what's changing.</p>
+  <div class="masthead-meta">
+    <div class="masthead-meta-item">Edition<span>2026 · First Annual</span></div>
+    <div class="masthead-meta-item">Data Source<span>TracedHealth DB · Public Records</span></div>
+    <div class="masthead-meta-item">Coverage<span>19 SF Neighborhoods</span></div>
+    <div class="masthead-meta-item">Methodology<span>Ownership · Longevity · Density</span></div>
+  </div>
+</div>
+
+<!-- SCORE LEGEND -->
+<div class="legend">
+  <div class="legend-cell">
+    <div class="legend-score score-a">A</div>
+    <div class="legend-label score-a">Highly Independent</div>
+    <div class="legend-desc">75%+ of food businesses independently owned. Strong independent culture. Low chain penetration.</div>
+  </div>
+  <div class="legend-cell">
+    <div class="legend-score score-b">B</div>
+    <div class="legend-label score-b">Mostly Independent</div>
+    <div class="legend-desc">60–74% independent. Predominantly local but with notable chain presence.</div>
+  </div>
+  <div class="legend-cell">
+    <div class="legend-score score-c">C</div>
+    <div class="legend-label score-c">Mixed</div>
+    <div class="legend-desc">45–59% independent. Roughly equal split. Chain consolidation visible.</div>
+  </div>
+  <div class="legend-cell">
+    <div class="legend-score score-d">D</div>
+    <div class="legend-label score-d">Chain Dominant</div>
+    <div class="legend-desc">30–44% independent. Chains and corporate operators outnumber locals.</div>
+  </div>
+  <div class="legend-cell">
+    <div class="legend-score score-f">F</div>
+    <div class="legend-label score-f">Heavily Chained</div>
+    <div class="legend-desc">Under 30% independent. Financial district / tourist corridor territory.</div>
+  </div>
+</div>
+
+<!-- DATA CALLOUT ROW -->
+<div class="data-callout">
+  <div class="callout-stat">
+    <div class="callout-num" style="color: var(--yellow);">54%</div>
+    <div class="callout-label">SF average<br>independence rate<br>across all neighborhoods</div>
+  </div>
+  <div class="callout-stat">
+    <div class="callout-num" style="color: #e05c4c;">-8pts</div>
+    <div class="callout-label">Change since 2019<br>Covid + rising rents<br>accelerated chain entry</div>
+  </div>
+  <div class="callout-stat">
+    <div class="callout-num" style="color: #6abf7a;">3</div>
+    <div class="callout-label">Neighborhoods with<br>A grade independence<br>scores in 2026</div>
+  </div>
+  <div class="callout-stat">
+    <div class="callout-num" style="color: #e05c4c;">2</div>
+    <div class="callout-label">Neighborhoods that<br>dropped a full grade<br>in the past 3 years</div>
+  </div>
+</div>
+
+<!-- RANKINGS -->
+<div class="rankings-section">
+  <div class="rankings-header">
+    <h2>2026 RANKINGS</h2>
+    <div class="rankings-header-note">Independence score weighted by ownership type, business longevity, and PE/conglomerate penetration. See methodology below.</div>
+  </div>
+
+  <!-- RANK ROWS -->
+  <div class="rank-row">
+    <div class="rank-num">1</div>
+    <div class="rank-name">Outer Sunset<span>Ocean Beach · Irving St · Judah St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:82%"></div></div>
+      <div class="rank-pct">82% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:12%"></div></div>
+      <div class="rank-pct">12% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:6%"></div></div>
+      <div class="rank-pct">6% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-a">A</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">2</div>
+    <div class="rank-name">Bernal Heights<span>Cortland Ave · Mission St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:79%"></div></div>
+      <div class="rank-pct">79% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:14%"></div></div>
+      <div class="rank-pct">14% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:7%"></div></div>
+      <div class="rank-pct">7% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-a">A</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">3</div>
+    <div class="rank-name">Mission District<span>Valencia St · 24th St · Mission St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:75%"></div></div>
+      <div class="rank-pct">75% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:16%"></div></div>
+      <div class="rank-pct">16% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:9%"></div></div>
+      <div class="rank-pct">9% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-a">A</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">4</div>
+    <div class="rank-name">Inner Richmond<span>Clement St · Geary Blvd</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:72%"></div></div>
+      <div class="rank-pct">72% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:18%"></div></div>
+      <div class="rank-pct">18% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:10%"></div></div>
+      <div class="rank-pct">10% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-b">B</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">5</div>
+    <div class="rank-name">Noe Valley<span>24th St · Church St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:68%"></div></div>
+      <div class="rank-pct">68% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:20%"></div></div>
+      <div class="rank-pct">20% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:12%"></div></div>
+      <div class="rank-pct">12% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-b">B</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">6</div>
+    <div class="rank-name">Hayes Valley<span>Hayes St · Octavia Blvd</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:64%"></div></div>
+      <div class="rank-pct">64% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:22%"></div></div>
+      <div class="rank-pct">22% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:14%"></div></div>
+      <div class="rank-pct">14% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-b">B</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">7</div>
+    <div class="rank-name">North Beach<span>Columbus Ave · Broadway</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:61%"></div></div>
+      <div class="rank-pct">61% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:24%"></div></div>
+      <div class="rank-pct">24% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:15%"></div></div>
+      <div class="rank-pct">15% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-b">B</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">8</div>
+    <div class="rank-name">Castro / Upper Market<span>Castro St · 18th St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:58%"></div></div>
+      <div class="rank-pct">58% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:26%"></div></div>
+      <div class="rank-pct">26% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:16%"></div></div>
+      <div class="rank-pct">16% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">9</div>
+    <div class="rank-name">Haight-Ashbury<span>Haight St · Cole St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:55%"></div></div>
+      <div class="rank-pct">55% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:28%"></div></div>
+      <div class="rank-pct">28% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:17%"></div></div>
+      <div class="rank-pct">17% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">10</div>
+    <div class="rank-name">Pacific Heights / Fillmore<span>Fillmore St · Sacramento St · California St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:52%"></div></div>
+      <div class="rank-pct">52% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:28%"></div></div>
+      <div class="rank-pct">28% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:20%"></div></div>
+      <div class="rank-pct">20% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">11</div>
+    <div class="rank-name">Lower Haight<span>Haight St · Fillmore St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:53%"></div></div>
+      <div class="rank-pct">53% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:29%"></div></div>
+      <div class="rank-pct">29% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:18%"></div></div>
+      <div class="rank-pct">18% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">12</div>
+    <div class="rank-name">Tenderloin / Civic Center<span>Larkin St · Polk St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:48%"></div></div>
+      <div class="rank-pct">48% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:32%"></div></div>
+      <div class="rank-pct">32% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:20%"></div></div>
+      <div class="rank-pct">20% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">13</div>
+    <div class="rank-name">Marina / Cow Hollow<span>Chestnut St · Union St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:45%"></div></div>
+      <div class="rank-pct">45% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:34%"></div></div>
+      <div class="rank-pct">34% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:21%"></div></div>
+      <div class="rank-pct">21% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-c">C</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">14</div>
+    <div class="rank-name">SoMa<span>Folsom St · Howard St · Brannan St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:41%"></div></div>
+      <div class="rank-pct">41% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:36%"></div></div>
+      <div class="rank-pct">36% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:23%"></div></div>
+      <div class="rank-pct">23% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-d">D</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">15</div>
+    <div class="rank-name">Embarcadero / Waterfront<span>Ferry Building · Pier 39</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:38%"></div></div>
+      <div class="rank-pct">38% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:38%"></div></div>
+      <div class="rank-pct">38% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:24%"></div></div>
+      <div class="rank-pct">24% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-d">D</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">16</div>
+    <div class="rank-name">Union Square<span>Powell St · Geary St · Market St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:32%"></div></div>
+      <div class="rank-pct">32% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:40%"></div></div>
+      <div class="rank-pct">40% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:28%"></div></div>
+      <div class="rank-pct">28% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-d">D</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">17</div>
+    <div class="rank-name">Financial District<span>Montgomery St · California St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:26%"></div></div>
+      <div class="rank-pct">26% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:44%"></div></div>
+      <div class="rank-pct">44% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:30%"></div></div>
+      <div class="rank-pct">30% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-f">F</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">18</div>
+    <div class="rank-name">Fisherman's Wharf<span>Beach St · Jefferson St</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:22%"></div></div>
+      <div class="rank-pct">22% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:46%"></div></div>
+      <div class="rank-pct">46% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:32%"></div></div>
+      <div class="rank-pct">32% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-f">F</div>
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-num">19</div>
+    <div class="rank-name">Stonestown / West Portal<span>19th Ave · West Portal Ave</span></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill green" style="width:19%"></div></div>
+      <div class="rank-pct">19% independent</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill yellow" style="width:48%"></div></div>
+      <div class="rank-pct">48% chain</div>
+    </div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div class="rank-bar-fill red" style="width:33%"></div></div>
+      <div class="rank-pct">33% PE/conglomerate</div>
+    </div>
+    <div class="rank-score score-f">F</div>
+  </div>
+
+</div>
+
+<!-- THREE SPOTLIGHTS -->
+<div class="spotlights">
+
+  <div class="spotlight">
+    <div class="spotlight-grade score-a">A</div>
+    <div class="spotlight-name">Outer Sunset</div>
+    <div class="spotlight-label">SF's Most Independent Neighborhood · #1 Overall</div>
+    <div class="spotlight-stat-row">
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--green);">82%</div>
+        <div class="spotlight-stat-label">Independent</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--yellow);">31</div>
+        <div class="spotlight-stat-label">Avg. yrs in biz</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--red);">6%</div>
+        <div class="spotlight-stat-label">PE / Corp</div>
+      </div>
+    </div>
+    <div class="spotlight-brands">
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">Andytown Coffee Roasters</div>
+        <div class="spotlight-brand-status">Indep. · 2014</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">Outerlands Restaurant</div>
+        <div class="spotlight-brand-status">Indep. · 2009</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">Thanh Long</div>
+        <div class="spotlight-brand-status">Family · 1971</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">Starbucks (Noriega St)</div>
+        <div class="spotlight-brand-status">Corp · NYSE</div>
+      </div>
+    </div>
+    <div class="spotlight-finding">The Sunset's fog belt geography has historically slowed chain investment. High residential density and multi-generational family businesses — particularly in the Asian-American community — give it structural independence advantages the rest of SF lacks.</div>
+  </div>
+
+  <div class="spotlight">
+    <div class="spotlight-grade score-b">B</div>
+    <div class="spotlight-name">Hayes Valley</div>
+    <div class="spotlight-label">Most Independent Per Sq Ft · #6 Overall</div>
+    <div class="spotlight-stat-row">
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--green);">64%</div>
+        <div class="spotlight-stat-label">Independent</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--yellow);">8</div>
+        <div class="spotlight-stat-label">Avg. yrs in biz</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--red);">14%</div>
+        <div class="spotlight-stat-label">PE / Corp</div>
+      </div>
+    </div>
+    <div class="spotlight-brands">
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">Ritual Coffee (Hayes St)</div>
+        <div class="spotlight-brand-status">Indep. · 2005</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">Rich Table</div>
+        <div class="spotlight-brand-status">Indep. · 2012</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot green"></div>
+        <div class="spotlight-brand-name">20th Century Café</div>
+        <div class="spotlight-brand-status">Indep. · 2013</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">Sweetgreen</div>
+        <div class="spotlight-brand-status">NYSE:SG · 2021</div>
+      </div>
+    </div>
+    <div class="spotlight-finding">Hayes Valley scores high on independence density but low on business longevity — most independents here opened post-2010. The neighborhood's desirability creates rent pressure that will likely test these numbers in future editions.</div>
+  </div>
+
+  <div class="spotlight">
+    <div class="spotlight-grade score-f">F</div>
+    <div class="spotlight-name">Financial District</div>
+    <div class="spotlight-label">Lowest Independence Score · #16 Overall</div>
+    <div class="spotlight-stat-row">
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--green);">26%</div>
+        <div class="spotlight-stat-label">Independent</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--yellow);">4</div>
+        <div class="spotlight-stat-label">Avg. yrs in biz</div>
+      </div>
+      <div class="spotlight-stat">
+        <div class="spotlight-stat-num" style="color: var(--red);">30%</div>
+        <div class="spotlight-stat-label">PE / Corp</div>
+      </div>
+    </div>
+    <div class="spotlight-brands">
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">Peet's Coffee</div>
+        <div class="spotlight-brand-status">JAB Holding · 2012</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">Sweetgreen</div>
+        <div class="spotlight-brand-status">NYSE:SG</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">McDonald's</div>
+        <div class="spotlight-brand-status">NYSE:MCD</div>
+      </div>
+      <div class="spotlight-brand">
+        <div class="spotlight-brand-dot red"></div>
+        <div class="spotlight-brand-name">Starbucks</div>
+        <div class="spotlight-brand-status">NASDAQ:SBUX</div>
+      </div>
+    </div>
+    <div class="spotlight-finding">The FiDi's captive lunch audience and high turnover make it the most valuable chain territory in SF. Post-pandemic hybrid work schedules hit independent businesses harder than chains — nationals with large real estate teams negotiated favorable terms through the vacancy window.</div>
+  </div>
+
+</div>
+
+<!-- METHODOLOGY -->
+<div class="methodology">
+  <div>
+    <h2>HOW WE<br>SCORE IT</h2>
+    <p style="font-size: 16px; color: var(--mid); line-height: 1.7; max-width: none;">The Independence Index score combines four weighted factors. Raw counts of independent vs. chain businesses are a starting point — but a 40-year family business and a venture-backed startup opened last year both count as "independent" by ownership. The methodology accounts for this.</p>
+    <p style="font-size: 16px; color: var(--mid); line-height: 1.7; max-width: none; margin-top: 16px;">PE-backed and conglomerate-owned businesses receive a negative weight — they're not just "not independent," they represent active chain consolidation. A neighborhood with 20% PE-owned businesses scores significantly worse than one with 20% national franchise chains.</p>
+  </div>
+  <div class="methodology-factors">
+    <div class="factor">
+      <div class="factor-weight">40%</div>
+      <div class="factor-content">
+        <h3>Ownership Independence Rate</h3>
+        <p>Raw percentage of food businesses with no private equity, conglomerate, or publicly-traded corporate ownership. Sole proprietor, partnership, and small LLC structures score highest.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-weight">25%</div>
+      <div class="factor-content">
+        <h3>Business Longevity</h3>
+        <p>Average years in business for independent operators in the neighborhood. Long-standing independents score higher than recently-opened ones. Proxies for community embeddedness.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-weight">20%</div>
+      <div class="factor-content">
+        <h3>PE / Conglomerate Penetration</h3>
+        <p>Percentage of businesses owned by private equity or publicly-traded conglomerates. Weighted negatively — high PE penetration is the strongest predictor of further consolidation.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-weight">15%</div>
+      <div class="factor-content">
+        <h3>Independence Density</h3>
+        <p>Number of independent businesses per square mile. High-density independent districts — like Hayes Valley's small geographic footprint — score better than dispersed independence.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="next-section">
+  <div>
+    <h2>EVERY BUSINESS<br>IN TRACED IS LIVE</h2>
+    <p>Search any San Francisco restaurant, café, or grocery on TracedHealth to see the full ownership record — independent status, acquisition history, and what changed when the ownership did.</p>
+  </div>
+  <div class="next-buttons">
+    <a href="https://tracedhealth.com" class="btn-primary">Search a Business →</a>
+    <a href="/clean-label-explainer" class="btn-secondary">← Part 3: Clean Labels</a>
+  </div>
+</div>
+
+<!-- SERIES FOOTER -->
+<div class="series-footer">
+  <a href="/pe-explainer" class="series-item">
+    <div class="series-num">Part 1</div>
+    <div class="series-title">Who's Really Behind Your Food: Private Equity</div>
+  </a>
+  <a href="/conglomerate-explainer" class="series-item">
+    <div class="series-num">Part 2</div>
+    <div class="series-title">Five Companies Own What You Eat</div>
+  </a>
+  <a href="/clean-label-explainer" class="series-item">
+    <div class="series-num">Part 3</div>
+    <div class="series-title">"Clean." "Natural." "Simple." None of These Words Mean Anything.</div>
+  </a>
+  <a href="https://tracedhealth.com" class="series-item">
+    <div class="series-num">TracedHealth</div>
+    <div class="series-title">Search the full brand database →</div>
+  </a>
+</div>
+
+<div class="footer-bar">
+  <span>© 2026 TracedHealth · SF Independence Index · First Annual Edition</span>
+  <span>Data from TracedHealth DB, public records, and field research</span>
+  <a href="https://tracedhealth.com/methodology">Full methodology →</a>
+</div>
+
+</body>
+</html>

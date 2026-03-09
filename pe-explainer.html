@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who's Really Behind Your Food — TracedHealth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0d0d0d;
+    --off-black: #141414;
+    --dark: #1a1a1a;
+    --panel: #1f1f1f;
+    --border: #2a2a2a;
+    --gold: #d4a843;
+    --gold-dim: #9a7830;
+    --red: #c0392b;
+    --red-dim: #7a2420;
+    --green: #2e7d52;
+    --green-bright: #3aaa6e;
+    --text: #e8e2d9;
+    --text-dim: #8a8278;
+    --text-muted: #4a4540;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(13,13,13,0.98) 0%, rgba(13,13,13,0) 100%);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(192,57,43,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(212,168,67,0.06) 0%, transparent 50%),
+      var(--black);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--red);
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    position: relative;
+    max-width: 900px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 560px;
+    line-height: 1.6;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .hero-scroll {
+    margin-top: 48px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(180deg, var(--text-muted), transparent);
+  }
+
+  /* SECTION BASE */
+  section {
+    position: relative;
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  section.full-width {
+    max-width: none;
+    padding: 120px 0;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 64px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+
+  h2 em { font-style: italic; color: var(--gold); }
+
+  p {
+    font-size: 17px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    max-width: 680px;
+  }
+
+  /* THE 60 SECOND EXPLAINER */
+  .explainer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 64px;
+    border: 1px solid var(--border);
+  }
+
+  .explainer-cell {
+    padding: 48px;
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .explainer-cell::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -20px;
+    right: 24px;
+    font-family: var(--serif);
+    font-size: 120px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.02);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .explainer-cell h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .explainer-cell p {
+    font-size: 15px;
+    max-width: none;
+  }
+
+  /* SALARY SECTION */
+  .salary-section {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .salary-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 48px;
+  }
+
+  .salary-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+    align-items: end;
+  }
+
+  .salary-callout {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    padding: 32px 40px;
+    margin-top: 48px;
+  }
+
+  .salary-callout-num {
+    font-family: var(--serif);
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .salary-callout-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .salary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 48px;
+  }
+
+  .salary-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0 24px 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .salary-table td {
+    padding: 20px 24px 20px 0;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+    font-size: 15px;
+    vertical-align: top;
+  }
+
+  .salary-table td:first-child {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .salary-num {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .salary-carry {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .salary-total {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--red);
+    font-weight: 500;
+  }
+
+  .carry-note {
+    margin-top: 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+
+  /* PLAYBOOK / 5 STEP */
+  .playbook-steps {
+    margin-top: 64px;
+    position: relative;
+  }
+
+  .playbook-steps::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 40px;
+    bottom: 40px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--gold), var(--red), var(--border));
+  }
+
+  .playbook-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 32px;
+    margin-bottom: 2px;
+    background: var(--panel);
+    padding: 40px 48px 40px 0;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .playbook-step:hover { background: #242424; }
+
+  .step-num-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 4px;
+  }
+
+  .step-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num.acquire { background: rgba(212,168,67,0.15); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
+  .step-num.debt { background: rgba(192,57,43,0.12); color: #e05c4c; border: 1px solid rgba(192,57,43,0.25); }
+  .step-num.cut { background: rgba(192,57,43,0.18); color: #e05c4c; border: 1px solid rgba(192,57,43,0.3); }
+  .step-num.rebrand { background: rgba(192,57,43,0.1); color: var(--text-dim); border: 1px solid var(--border); }
+  .step-num.sell { background: rgba(212,168,67,0.2); color: var(--gold); border: 1px solid rgba(212,168,67,0.4); }
+
+  .step-content h3 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-content p {
+    font-size: 15px;
+    max-width: none;
+  }
+
+  .step-example {
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold-dim);
+    letter-spacing: 0.1em;
+    padding: 8px 12px;
+    background: rgba(212,168,67,0.05);
+    border-left: 2px solid var(--gold-dim);
+    display: inline-block;
+  }
+
+  /* BRAND FLIP VISUAL */
+  .flip-section {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .flip-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 48px;
+  }
+
+  .flip-diagram {
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .flip-brand {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  .flip-brand-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    padding: 20px 24px 20px 0;
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 100px;
+  }
+
+  .flip-brand-name span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  .flip-timeline {
+    display: flex;
+    align-items: center;
+    padding-left: 32px;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flip-node {
+    flex-shrink: 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .flip-node-box {
+    padding: 14px 20px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    min-width: 140px;
+    max-width: 180px;
+    position: relative;
+  }
+
+  .flip-node-box.origin { border-color: var(--green); background: rgba(46,125,82,0.08); }
+  .flip-node-box.pe { border-color: var(--red-dim); background: rgba(122,36,32,0.12); }
+  .flip-node-box.conglomerate { border-color: rgba(192,57,43,0.6); background: rgba(192,57,43,0.1); }
+  .flip-node-box.public { border-color: rgba(212,168,67,0.4); background: rgba(212,168,67,0.06); }
+
+  .flip-node-year {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .flip-node-owner {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .flip-node-price {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 4px;
+  }
+
+  .flip-node-type {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .flip-node-type.origin { color: var(--green-bright); }
+  .flip-node-type.pe { color: #e05c4c; }
+  .flip-node-type.conglomerate { color: #e05c4c; }
+  .flip-node-type.public { color: var(--gold); }
+
+  .flip-arrow {
+    flex-shrink: 0;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0 4px;
+  }
+
+  .flip-arrow-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), var(--text-muted));
+    position: relative;
+  }
+
+  .flip-arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -4px;
+    top: -6px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .flip-arrow-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* CASE STUDIES */
+  .cases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin-top: 64px;
+  }
+
+  .case-card {
+    background: var(--panel);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .case-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .case-card.red::after { background: var(--red); }
+  .case-card.gold::after { background: var(--gold); }
+  .case-card.mixed::after { background: linear-gradient(90deg, var(--gold), var(--red)); }
+
+  .case-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .case-brand {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .case-headline {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: none;
+    flex: 1;
+  }
+
+  .case-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .case-fact {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .case-fact-bullet {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .case-fact-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .case-verdict {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+  }
+
+  /* WHAT CHANGES */
+  .changes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 64px;
+  }
+
+  .changes-col h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .changes-col.danger h3 { color: var(--red); border-color: var(--red-dim); }
+  .changes-col.stable h3 { color: var(--green-bright); border-color: var(--green); }
+
+  .change-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+
+  .change-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .change-text {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    max-width: none;
+  }
+
+  .change-text strong {
+    color: var(--text);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 160px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(212,168,67,0.06) 0%, transparent 70%);
+  }
+
+  .cta-section h2 {
+    margin: 0 auto 24px;
+    max-width: 640px;
+    position: relative;
+  }
+
+  .cta-section p {
+    margin: 0 auto 48px;
+    position: relative;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    position: relative;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 36px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover { background: #e8bc52; }
+
+  .btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 16px 36px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* FOOTER BAR */
+  .footer-bar {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-bar span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-bar a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+
+  /* DIVIDER */
+  .rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* INLINE HIGHLIGHT */
+  .hl-gold { color: var(--gold); }
+  .hl-red { color: #e05c4c; }
+
+  /* FADE IN ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * {
+    animation: fadeUp 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  .hero .hero-eyebrow { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.25s; }
+  .hero .hero-sub { animation-delay: 0.4s; }
+  .hero .hero-scroll { animation-delay: 0.55s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .hero { padding: 0 24px 64px; }
+    section { padding: 80px 24px; }
+    .explainer-grid { grid-template-columns: 1fr; }
+    .salary-header { grid-template-columns: 1fr; gap: 40px; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .changes-grid { grid-template-columns: 1fr; }
+    .flip-brand { grid-template-columns: 1fr; }
+    .flip-brand-name { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 16px; position: static; }
+    .flip-timeline { padding-left: 0; }
+    .footer-bar { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://tracedhealth.com" class="nav-logo">TracedHealth</a>
+  <span class="nav-tag">Research · Explainers</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">Explainer Series</div>
+  <h1>Who's <em>Really</em><br>Behind Your Food</h1>
+  <p class="hero-sub">A plain-language guide to private equity — how it works, who gets paid, and why the brand you loved last year might taste different today.</p>
+  <div class="hero-scroll">Scroll to read</div>
+</div>
+
+<hr class="rule">
+
+<!-- 60 SECOND EXPLAINER -->
+<section>
+  <div class="section-label">Part One</div>
+  <h2>The 60-Second<br><em>Explainer</em></h2>
+  <p>Private equity isn't complicated. It's a specific playbook for making money from brands — one that often works against the people buying the products.</p>
+
+  <div class="explainer-grid">
+    <div class="explainer-cell" data-num="1">
+      <h3>What is Private Equity?</h3>
+      <p>A private equity firm is a company that raises money from wealthy investors — pension funds, university endowments, billionaires — and uses it to buy other companies. They don't build anything. They buy existing businesses, try to make them more profitable, and sell them again, usually within 5–7 years. The goal is to return 2–3x the original investment.</p>
+    </div>
+    <div class="explainer-cell" data-num="2">
+      <h3>How is it different from regular ownership?</h3>
+      <p>A founder who builds a brand over 20 years thinks in decades. A PE firm operating on a 5-year fund cycle thinks in quarters. They need to exit — sell the company to someone else — before the fund closes. That exit pressure shapes every decision made while they own the brand.</p>
+    </div>
+    <div class="explainer-cell" data-num="3">
+      <h3>Where does the money come from?</h3>
+      <p>PE firms raise funds from outside investors (called limited partners or LPs). They pool this capital, buy companies, and charge a 2% annual management fee on all assets — regardless of performance. Then, when they sell, they keep 20% of the profits above a hurdle rate. This "2 and 20" structure is standard across the industry.</p>
+    </div>
+    <div class="explainer-cell" data-num="4">
+      <h3>Why does this matter to what you eat?</h3>
+      <p>PE ownership creates specific pressure to increase margins before a sale. The fastest levers are ingredient substitution (cheaper inputs, same packaging), price increases, and headcount reduction. These changes happen after acquisition — sometimes within months. The brand looks the same. The product may not be.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- SALARY SECTION -->
+<div class="salary-section">
+  <div class="salary-inner">
+    <div class="section-label">Part Two</div>
+    <div class="salary-header">
+      <div>
+        <h2>What PE<br><em>Professionals</em><br>Actually Earn</h2>
+        <p>The salary numbers are large. The carried interest numbers are in a different category entirely. Understanding the incentive structure explains why PE firms behave the way they do.</p>
+      </div>
+      <div>
+        <div class="salary-callout">
+          <div class="salary-callout-num">$33M</div>
+          <div class="salary-callout-label">Average carry earned by a PE Managing Partner<br>across a single fund's 5–7 year life cycle</div>
+        </div>
+        <div class="salary-callout" style="margin-top: 16px; border-left-color: var(--gold);">
+          <div class="salary-callout-num" style="color: var(--gold); font-size: 48px;">$843M</div>
+          <div class="salary-callout-label">KKR's carried interest compensation pool<br>in 2024 alone — nearly double 2023</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="salary-table">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Base + Bonus</th>
+          <th>Carried Interest</th>
+          <th>Total (est.)</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Analyst</td>
+          <td><span class="salary-num">$150–250K</span></td>
+          <td><span class="salary-carry">Rare / minimal</span></td>
+          <td><span class="salary-total">$150–250K</span></td>
+          <td style="font-size: 13px; color: var(--text-muted);">Financial modeling, due diligence</td>
+        </tr>
+        <tr>
+          <td>Associate</td>
+          <td><span class="salary-num">$250–450K</span></td>
+          <td><span class="salary-carry">~$500K over fund life</span></td>
+          <td><span class="salary-total">$300–500K/yr</span></td>
+          <td style="font-size: 13px; color: var(--text-muted);">Mostly ex-investment bankers</td>
+        </tr>
+        <tr>
+          <td>Vice President</td>
+          <td><span class="salary-num">$450–700K</span></td>
+          <td><span class="salary-carry">~$2.9M over fund life</span></td>
+          <td><span class="salary-total">$600K–1M/yr</span></td>
+          <td style="font-size: 13px; color: var(--text-muted);">Deal execution lead</td>
+        </tr>
+        <tr>
+          <td>Principal / Director</td>
+          <td><span class="salary-num">$600K–1M</span></td>
+          <td><span class="salary-carry">$5–10M over fund life</span></td>
+          <td><span class="salary-total">$1–2M/yr</span></td>
+          <td style="font-size: 13px; color: var(--text-muted);">Deal sourcing, portfolio oversight</td>
+        </tr>
+        <tr>
+          <td>Managing Director / Partner</td>
+          <td><span class="salary-num">$900K–2.5M</span></td>
+          <td><span class="salary-carry">$9.4M–33M+ over fund life</span></td>
+          <td><span class="salary-total">$2–8M+/yr</span></td>
+          <td style="font-size: 13px; color: var(--text-muted);">Fund strategy, LP relations, exits</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="carry-note">
+      <strong style="color: var(--text); font-weight: 500;">What is "carried interest"?</strong> When a PE firm sells a company at a profit, the firm keeps 20% of the gains above the agreed minimum return. That 20% is split among senior staff as "carry." It is taxed at the long-term capital gains rate (typically 20%) rather than income tax rates (up to 37%) — a structural tax advantage that has been the subject of political debate for decades and has never been closed. A managing partner earning $20M in carry pays a lower effective tax rate than a nurse earning $80K.
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- THE PLAYBOOK -->
+<section>
+  <div class="section-label">Part Three</div>
+  <h2>The Standard<br><em>Playbook</em></h2>
+  <p>Most PE acquisitions of consumer food brands follow the same five-step sequence. The details vary. The structure almost never does.</p>
+
+  <div class="playbook-steps">
+    <div class="playbook-step">
+      <div class="step-num-wrap"><div class="step-num acquire">01</div></div>
+      <div class="step-content">
+        <h3>Acquire at a premium</h3>
+        <p>The firm identifies a brand with strong consumer recognition, consistent revenue, and a founder ready to sell. They pay above-market — often 15–20x EBITDA — because they're buying the brand's equity, not just its cash flow. The price premium is funded largely by debt, which gets loaded onto the acquired company's balance sheet.</p>
+        <div class="step-example">Example: JAB paid 19.5x EBITDA for Panera Bread — $7.5B in 2017</div>
+      </div>
+    </div>
+
+    <div class="playbook-step">
+      <div class="step-num-wrap"><div class="step-num debt">02</div></div>
+      <div class="step-content">
+        <h3>Load with debt</h3>
+        <p>The acquisition is financed with significant leverage — meaning the company itself ends up carrying the debt used to buy it. This is called a leveraged buyout (LBO). Interest payments on that debt become the company's burden, not the PE firm's. It creates immediate pressure to generate cash flow to service the debt, compressing any budget for R&D, sourcing quality, or worker pay.</p>
+        <div class="step-example">Leverage ratios of 4–6x EBITDA are standard in food & beverage LBOs</div>
+      </div>
+    </div>
+
+    <div class="playbook-step">
+      <div class="step-num-wrap"><div class="step-num cut">03</div></div>
+      <div class="step-content">
+        <h3>Cut costs, expand margin</h3>
+        <p>With debt to service and an exit timeline to meet, the firm focuses on expanding operating margins. The levers are predictable: sourcing cheaper ingredients (often reformulating to maintain taste while reducing cost), reducing headcount, consolidating suppliers, and raising prices. The brand's packaging and marketing may stay identical while the product quietly changes.</p>
+        <div class="step-example">Clif Bar reformulated several products within 18 months of the Mondelēz acquisition</div>
+      </div>
+    </div>
+
+    <div class="playbook-step">
+      <div class="step-num-wrap"><div class="step-num rebrand">04</div></div>
+      <div class="step-content">
+        <h3>Maintain brand facade</h3>
+        <p>The founding story stays. The packaging evokes the original. Social media channels post the same kind of content. This isn't deception by design — it's that brand equity is the asset being protected. But the operational reality of the business may have changed substantially. Consumers have no mechanism to know which version of the product they're buying.</p>
+        <div class="step-example">Stonyfield, Honest Tea, Lärabar — all retain independent visual identities post-acquisition</div>
+      </div>
+    </div>
+
+    <div class="playbook-step">
+      <div class="step-num-wrap"><div class="step-num sell">05</div></div>
+      <div class="step-content">
+        <h3>Exit at a profit</h3>
+        <p>Within 5–7 years, the firm sells — to a strategic acquirer (a conglomerate), another PE firm, or via IPO. The exit generates the carried interest that makes PE careers extremely lucrative at the senior level. The brand moves to its next owner, often with the same playbook starting again. The consumer is the last to know.</p>
+        <div class="step-example">RXBAR: sold to Kellogg's 2017 ($600M), Kellogg's snacks then sold to Mars 2024 — two flips in 7 years</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- BRAND FLIP VISUAL -->
+<div class="flip-section">
+  <div class="flip-inner">
+    <div class="section-label">Part Four</div>
+    <h2>The Brand<br><em>Flip Map</em></h2>
+    <p>Follow the ownership chain of brands you likely buy. Each arrow is a transaction. Each transaction generated carried interest for someone you've never heard of.</p>
+
+    <div class="flip-diagram">
+
+      <!-- RXBAR -->
+      <div class="flip-brand">
+        <div class="flip-brand-name">RXBAR<span>Protein bar</span></div>
+        <div class="flip-timeline">
+          <div class="flip-node">
+            <div class="flip-node-box origin">
+              <div class="flip-node-year">2012–2017</div>
+              <div class="flip-node-owner">Peter Rahal &<br>Jared Smith</div>
+              <div class="flip-node-price">Founded Chicago</div>
+              <div class="flip-node-type origin">Independent</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Sold 2017</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box pe">
+              <div class="flip-node-year">2017–2024</div>
+              <div class="flip-node-owner">Kellogg's<br>Corporation</div>
+              <div class="flip-node-price">$600M</div>
+              <div class="flip-node-type pe">Conglomerate</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Sold 2024</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box conglomerate">
+              <div class="flip-node-year">2024–Now</div>
+              <div class="flip-node-owner">Mars<br>Incorporated</div>
+              <div class="flip-node-price">Part of $36B deal</div>
+              <div class="flip-node-type conglomerate">Conglomerate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIF BAR -->
+      <div class="flip-brand">
+        <div class="flip-brand-name">Clif Bar<span>Energy bar</span></div>
+        <div class="flip-timeline">
+          <div class="flip-node">
+            <div class="flip-node-box origin">
+              <div class="flip-node-year">1992–2022</div>
+              <div class="flip-node-owner">Gary Erickson<br>& Kit Crawford</div>
+              <div class="flip-node-price">30 years independent</div>
+              <div class="flip-node-type origin">Founder-Owned</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Sold 2022</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box conglomerate">
+              <div class="flip-node-year">2022–Now</div>
+              <div class="flip-node-owner">Mondelēz<br>International</div>
+              <div class="flip-node-price">$2.9 Billion</div>
+              <div class="flip-node-type conglomerate">Conglomerate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLUE BOTTLE -->
+      <div class="flip-brand">
+        <div class="flip-brand-name">Blue Bottle<br>Coffee<span>Specialty coffee</span></div>
+        <div class="flip-timeline">
+          <div class="flip-node">
+            <div class="flip-node-box origin">
+              <div class="flip-node-year">2002–2017</div>
+              <div class="flip-node-owner">James Freeman<br>(Founder)</div>
+              <div class="flip-node-price">Oakland, CA origin</div>
+              <div class="flip-node-type origin">Founder-Led</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Acquired 2017</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box conglomerate">
+              <div class="flip-node-year">2017–2026</div>
+              <div class="flip-node-owner">Nestlé</div>
+              <div class="flip-node-price">~$500M (68% stake)</div>
+              <div class="flip-node-type conglomerate">Conglomerate</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Sold Mar 2026</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box pe">
+              <div class="flip-node-year">2026–Now</div>
+              <div class="flip-node-owner">Centurium Capital<br>(Luckin Coffee backer)</div>
+              <div class="flip-node-price">&lt;$400M</div>
+              <div class="flip-node-type pe">Chinese PE / Luckin</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANERA -->
+      <div class="flip-brand">
+        <div class="flip-brand-name">Panera Bread<span>Fast casual</span></div>
+        <div class="flip-timeline">
+          <div class="flip-node">
+            <div class="flip-node-box origin">
+              <div class="flip-node-year">1981–1999</div>
+              <div class="flip-node-owner">Ron Shaich<br>Au Bon Pain</div>
+              <div class="flip-node-price">Founded St. Louis</div>
+              <div class="flip-node-type origin">Founder-Led</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">IPO 1999</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box public">
+              <div class="flip-node-year">1999–2017</div>
+              <div class="flip-node-owner">Public Company<br>NASDAQ: PNRA</div>
+              <div class="flip-node-price">$7B market cap</div>
+              <div class="flip-node-type public">Public Co.</div>
+            </div>
+          </div>
+          <div class="flip-arrow">
+            <div class="flip-arrow-line"></div>
+            <div class="flip-arrow-label">Take-private 2017</div>
+          </div>
+          <div class="flip-node">
+            <div class="flip-node-box pe">
+              <div class="flip-node-year">2017–Now</div>
+              <div class="flip-node-owner">JAB Holding<br>(Reimann family)</div>
+              <div class="flip-node-price">$7.5 Billion</div>
+              <div class="flip-node-type pe">Private / Held</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- CASE STUDIES -->
+<section>
+  <div class="section-label">Part Five</div>
+  <h2>Three Stories<br><em>Worth Knowing</em></h2>
+  <p>Each of these brands has a different ownership arc. Each represents something specific about how PE and conglomerate acquisition plays out in the food industry.</p>
+
+  <div class="cases-grid">
+
+    <div class="case-card red">
+      <div class="case-tag">Case Study 01 · Energy Bar</div>
+      <div class="case-brand">Clif Bar</div>
+      <p class="case-headline">Founded 1992 in a garage. Ran for 30 years as one of the most visible independent food brands in America. Turned down acquisition offers repeatedly — including a reported $2.4B offer in 2000. Sold to Mondelēz International in 2022 for $2.9B.</p>
+      <div class="case-facts">
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Founders cited employee ownership program and sustainability commitments as reasons to stay independent for decades</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Mondelēz also owns Oreo, Cadbury, Chips Ahoy — a fundamentally different product philosophy</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Reformulations reported within 18 months of acquisition, including changes to several core bar recipes</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Employee ownership structure was unwound as part of the transaction</div>
+        </div>
+      </div>
+      <div class="case-verdict">Traced verdict: What the sale proves is that 30 years of stated values can be transferred in a single transaction.</div>
+    </div>
+
+    <div class="case-card gold">
+      <div class="case-tag">Case Study 02 · Protein Bar</div>
+      <div class="case-brand">RXBAR</div>
+      <p class="case-headline">Founded 2012 in Chicago. Built the brand on radical ingredient transparency — literally printing the ingredient list on the front of the package. Sold to Kellogg's in 2017 for $600M. Then Kellogg's snacks division was acquired by Mars in 2024.</p>
+      <div class="case-facts">
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Two owners in 7 years — the original founders exited at acquisition</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Mars also owns Kind Bar (acquired 2020) — now owns two competing "clean" bar brands</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">The "No B.S." branding is now owned by one of the world's largest private confectionery companies</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Mars is privately held — no public disclosure requirements, no shareholder scrutiny</div>
+        </div>
+      </div>
+      <div class="case-verdict">Traced verdict: The transparency was real when the founders owned it. The question is whether it survives two ownership changes.</div>
+    </div>
+
+    <div class="case-card mixed">
+      <div class="case-tag">Case Study 03 · Yogurt</div>
+      <div class="case-brand">siggi's</div>
+      <p class="case-headline">Founded 2004 by Siggi Hilmarsson in New York, inspired by traditional Icelandic skyr. Built a clean-ingredient identity: minimal sugar, simple sourcing, no artificial additives. Sold in 2018 to Bellamy's Organic, backed by China Mengniu Dairy — a state-linked Chinese conglomerate.</p>
+      <div class="case-facts">
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Mengniu is listed on the Hong Kong Stock Exchange and has significant state influence</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Siggi Hilmarsson departed the company after the acquisition</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">Most consumers have no knowledge of the 2018 ownership change — the Icelandic brand identity is fully intact</div>
+        </div>
+        <div class="case-fact">
+          <div class="case-fact-bullet">→</div>
+          <div class="case-fact-text">No formula changes documented — but the founder who built the formula is no longer there</div>
+        </div>
+      </div>
+      <div class="case-verdict">Traced verdict: The brand is intact. The founding alignment that created it is not. These are different things.</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- WHAT CHANGES / WHAT STAYS -->
+<section>
+  <div class="section-label">Part Six</div>
+  <h2>What Changes.<br><em>What Doesn't.</em></h2>
+  <p>PE acquisition doesn't automatically mean a brand degrades. But specific things reliably shift, and specific things tend to stay stable. Knowing the difference matters.</p>
+
+  <div class="changes-grid">
+    <div class="changes-col danger">
+      <h3>What typically changes</h3>
+      <div class="change-item">
+        <div class="change-icon">⚠</div>
+        <div class="change-text">
+          <strong>Ingredient sourcing</strong>
+          Supplier relationships built by founders are often renegotiated. Cost is the primary variable in a PE-owned business. Premium sourcing commitments made by founders are not contractually binding on new owners.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">⚠</div>
+        <div class="change-text">
+          <strong>Formula over time</strong>
+          Reformulations are common 12–36 months post-acquisition. They're rarely announced. Products continue under the same name, same packaging, and — where possible — similar taste profiles.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">⚠</div>
+        <div class="change-text">
+          <strong>Founder presence</strong>
+          Most founders exit within 1–2 years of acquisition — either voluntarily or through management restructuring. The person whose values shaped the product is typically gone.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">⚠</div>
+        <div class="change-text">
+          <strong>Price</strong>
+          Post-acquisition price increases are common. The brand's premium positioning is maintained while margins improve.
+        </div>
+      </div>
+    </div>
+
+    <div class="changes-col stable">
+      <h3>What typically stays the same</h3>
+      <div class="change-item">
+        <div class="change-icon">✓</div>
+        <div class="change-text">
+          <strong>Brand identity and packaging</strong>
+          The logo, the founding story on the back of the package, the "our values" language on the website — these are the asset being protected. They don't change because they're worth money.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">✓</div>
+        <div class="change-text">
+          <strong>Core product categories</strong>
+          PE doesn't typically pivot brands into different categories. A protein bar company stays a protein bar company. The category is what was bought.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">✓</div>
+        <div class="change-text">
+          <strong>Distribution and retail placement</strong>
+          Often improves post-acquisition. Conglomerate ownership typically opens distribution channels that independent brands couldn't access.
+        </div>
+      </div>
+      <div class="change-item">
+        <div class="change-icon">✓</div>
+        <div class="change-text">
+          <strong>Short-term product quality</strong>
+          Changes happen gradually, not overnight. Many acquired brands maintain quality for 1–3 years while the operational integration proceeds. The risk is cumulative, not immediate.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="section-label" style="justify-content: center;">What You Can Do</div>
+  <h2>Traced tracks every<br>ownership change<br><em>so you don't have to</em></h2>
+  <p style="margin: 0 auto 48px;">Search any brand. Scan any barcode in a grocery store. Every profile shows the full ownership chain, acquisition history, and what changed. Free, no account required.</p>
+  <div class="cta-buttons">
+    <a href="https://tracedhealth.com" class="btn-primary">Search a Brand</a>
+    <a href="https://tracedhealth.com/scanner" class="btn-secondary">Open Scanner</a>
+  </div>
+</div>
+
+<div class="footer-bar">
+  <span>© 2026 TracedHealth · tracedhealth.com</span>
+  <span>Data sourced from public filings, SEC records, and primary research</span>
+  <a href="https://tracedhealth.com/methodology">Our methodology →</a>
+</div>
+
+</body>
+</html>
